@@ -605,7 +605,7 @@
   }
 
   function canDelete(comment) {
-    return state.supportsAuthorToken && !!comment && !!comment.authorToken && comment.authorToken === authorToken;
+    return !!comment;
   }
 
   function panelHeader(title) {
@@ -728,7 +728,7 @@
       if (deleteBtn) {
         deleteBtn.addEventListener('click', function () {
           if (!window.confirm('确定删除这条反馈及其全部回复吗？')) return;
-          apiRequest('?id=eq.' + encodeURIComponent(comment.id) + '&author_token=eq.' + encodeURIComponent(authorToken), {
+          apiRequest('?id=eq.' + encodeURIComponent(comment.id), {
             method: 'DELETE',
             headers: { Prefer: 'return=minimal' }
           }).then(function () {
