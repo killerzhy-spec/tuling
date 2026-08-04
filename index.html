@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>图灵 2.0 — 大模型情感智能测评平台</title>
+  <meta name="description" content="从情绪感知、情感理解，到共情回应与风险识别——构建开放、透明、可复现的大模型情感智能测评体系。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="vitality-blue.css" />
+  <link rel="stylesheet" href="animations.css" />
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="site-header">
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <svg class="brand-symbol brand-ai" viewBox="0 0 42 42" fill="none" aria-hidden="true">
+          <path d="M21 2.8 36.8 12v18L21 39.2 5.2 30V12L21 2.8Z" stroke="#1677FF" stroke-width="2"/>
+          <path d="m21 8 11 6.4v12.7L21 33.5 10 27.1V14.4L21 8Z" stroke="#64B5FF"/>
+          <line x1="21" y1="11" x2="21" y2="31" stroke="#1677FF" stroke-width="1.2" stroke-opacity="0.4" stroke-dasharray="2 2"/>
+          <line x1="10" y1="21" x2="32" y2="21" stroke="#1677FF" stroke-width="1.2" stroke-opacity="0.4" stroke-dasharray="2 2"/>
+          <path d="M21 21 Q24.6 17.4 28 14" stroke="#705CFF" stroke-width="1.1" stroke-opacity="0.75" fill="none"/>
+          <path d="M21 21 Q17.4 17.4 14 14" stroke="#1677FF" stroke-width="1.1" stroke-opacity="0.75" fill="none"/>
+          <path d="M21 21 Q17.4 24.6 14 28" stroke="#64B5FF" stroke-width="1.1" stroke-opacity="0.75" fill="none"/>
+          <path d="M21 21 Q24.6 24.6 28 28" stroke="#73C4FF" stroke-width="1.1" stroke-opacity="0.75" fill="none"/>
+          <circle cx="28" cy="14" r="2.4" fill="#705CFF"/>
+          <circle cx="14" cy="14" r="2.4" fill="#1677FF"/>
+          <circle cx="14" cy="28" r="2.4" fill="#64B5FF"/>
+          <circle cx="28" cy="28" r="2.4" fill="#73C4FF"/>
+          <circle cx="21" cy="21" r="5" fill="#1677FF"/>
+          <circle cx="21" cy="21" r="2.3" fill="#A9D8FF"/>
+          <circle cx="5.2" cy="12" r="1.8" fill="#705CFF"/>
+          <circle cx="36.8" cy="30" r="1.8" fill="#1677FF"/>
+        </svg>
+        <span class="brand-word">
+          <span>图灵 <b>2.0</b></span>
+          <small>EMOTIONAL INTELLIGENCE AI</small>
+        </span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html" class="active">首页</a>
+        <a href="datasets.html">公共数据集</a>
+        <a href="framework.html">测评框架</a>
+        <a href="owned.html">自有数据集</a>
+        <a href="leaderboard.html">模型榜单</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="lang-toggle" aria-label="切换语言">
+          <span class="lang-opt is-active" data-lang="zh">中文</span>
+          <span class="lang-divider">/</span>
+          <span class="lang-opt" data-lang="en">EN</span>
+        </button>
+        <button class="btn-icon-nav" data-dialog-open title="提交测评结果">
+          <svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true">
+            <path d="M10 13V4M6 7l4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 16h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="nav-toggle" aria-label="展开导航">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Nav -->
+  <div class="mobile-nav">
+    <a href="index.html" class="active">首页</a>
+    <a href="datasets.html">公共数据集</a>
+    <a href="framework.html">测评框架</a>
+    <a href="owned.html">自有数据集</a>
+    <a href="leaderboard.html">模型榜单</a>
+    <a href="#" data-dialog-open>提交测评结果 ↗</a>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="section-shell" style="padding-top:72px;padding-bottom:72px;">
+      <div class="hero-grid">
+
+        <!-- Left -->
+        <div class="hero-left">
+          <span class="hero-eyebrow fade-in-up">EMOTIONAL INTELLIGENCE AI · OPEN RESEARCH BENCHMARK · 2026</span>
+          <h1 class="hero-title fade-in-up fade-in-up-delay-1">
+            图灵 2.0<br />
+            <span class="accent-blue">大模型情感智能</span><br />
+            测评平台
+          </h1>
+          <p class="hero-desc fade-in-up fade-in-up-delay-2">
+            从情绪感知、情感理解，到共情回应与风险识别——构建开放、透明、可复现的大模型情感智能测评体系。
+          </p>
+          <div class="hero-actions fade-in-up fade-in-up-delay-3">
+            <a href="datasets.html" class="btn btn-primary">浏览公共数据集 →</a>
+            <a href="framework.html" class="btn btn-ghost">了解测评框架</a>
+          </div>
+          <div class="theory-tags fade-in-up fade-in-up-delay-4">
+            <span class="theory-label">理论基础</span>
+            <span class="chip chip-outline">Ekman</span>
+            <span class="chip chip-outline">Russell VA</span>
+            <span class="chip chip-outline">Open-vocabulary</span>
+          </div>
+        </div>
+
+        <!-- Right: Brain Animation -->
+        <div class="hero-right">
+          <div class="brain-stage">
+            <div class="cap-label cap-perception">
+              <span class="cap-zh">情绪感知</span>
+              PERCEPTION
+            </div>
+            <div class="cap-label cap-empathy">
+              <span class="cap-zh">共情回应</span>
+              EMPATHY
+            </div>
+            <div class="cap-label cap-safety">
+              <span class="cap-zh">风险识别</span>
+              SAFETY
+            </div>
+
+            <svg class="brain-svg" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+              <!-- Outer hexagon (pointy-top, R=140) -->
+              <path class="brain-outline"
+                d="M200,60 L321,130 L321,270 L200,340 L79,270 L79,130 Z"
+                stroke="#1677FF" stroke-width="1.5" />
+
+              <!-- Inner hexagon (R=100) -->
+              <path
+                d="M200,100 L287,150 L287,250 L200,300 L113,250 L113,150 Z"
+                stroke="#64B5FF" stroke-width="1" stroke-opacity="0.3" />
+
+              <!-- Dashed axis lines -->
+              <line x1="200" y1="50" x2="200" y2="350" stroke="#1677FF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 4" />
+              <line x1="65" y1="200" x2="335" y2="200" stroke="#1677FF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 4" />
+
+              <!-- Axis labels at the 4 side vertices of the inner hexagon -->
+              <text x="120" y="155" text-anchor="start" class="va-label">高唤醒</text>
+              <text x="280" y="155" text-anchor="end"   class="va-label">高效价</text>
+              <text x="120" y="262" text-anchor="start" class="va-label">低效价</text>
+              <text x="280" y="262" text-anchor="end"   class="va-label">低唤醒</text>
+
+              <!-- 3 straight diagonal lines connecting opposite vertices through center -->
+              <line class="brain-line" x1="200" y1="60"  x2="200" y2="340" stroke="#1677FF" stroke-width="1.1" />
+              <line class="brain-line" x1="321" y1="130" x2="79"  y2="270" stroke="#705CFF" stroke-width="1.1" />
+              <line class="brain-line" x1="79"  y1="130" x2="321" y2="270" stroke="#64B5FF" stroke-width="1.1" />
+
+              <!-- Center glow -->
+              <circle cx="200" cy="200" r="14" fill="#1677FF" fill-opacity="0.08" />
+              <circle cx="200" cy="200" r="7"  fill="#1677FF" fill-opacity="0.2" />
+              <circle cx="200" cy="200" r="3"  fill="#1677FF" />
+
+              <!-- Vertex dots: translate to center + shrink from large to small, slow ease-in -->
+              <circle class="brain-dot" cx="200" cy="60" r="7">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 0,140; 0,0" keyTimes="0;0.5;1" dur="8s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1s"/>
+                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="8s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1s"/>
+                <animate attributeName="opacity" values="0.5;1;0.5" keyTimes="0;0.5;1" dur="8s" repeatCount="indefinite" begin="-1s"/>
+              </circle>
+              <circle class="brain-dot-purple" cx="321" cy="130" r="8">
+                <animateTransform attributeName="transform" type="translate" values="0,0; -121,70; 0,0" keyTimes="0;0.5;1" dur="7.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.2s"/>
+                <animate attributeName="r" values="8;2;8" keyTimes="0;0.5;1" dur="7.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.2s"/>
+                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="7.5s" repeatCount="indefinite" begin="-1.2s"/>
+              </circle>
+              <circle class="brain-dot" cx="321" cy="270" r="7">
+                <animateTransform attributeName="transform" type="translate" values="0,0; -121,-70; 0,0" keyTimes="0;0.5;1" dur="9s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.8s"/>
+                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="9s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.8s"/>
+                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="9s" repeatCount="indefinite" begin="-0.8s"/>
+              </circle>
+              <circle class="brain-dot" cx="200" cy="340" r="7">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 0,-140; 0,0" keyTimes="0;0.5;1" dur="10s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-2s"/>
+                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="10s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-2s"/>
+                <animate attributeName="opacity" values="0.5;1;0.5" keyTimes="0;0.5;1" dur="10s" repeatCount="indefinite" begin="-2s"/>
+              </circle>
+              <circle class="brain-dot" cx="79" cy="270" r="8">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 121,-70; 0,0" keyTimes="0;0.5;1" dur="7s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.6s"/>
+                <animate attributeName="r" values="8;2;8" keyTimes="0;0.5;1" dur="7s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.6s"/>
+                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="7s" repeatCount="indefinite" begin="-1.6s"/>
+              </circle>
+              <circle class="brain-dot" cx="79" cy="130" r="7">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 121,70; 0,0" keyTimes="0;0.5;1" dur="8.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.5s"/>
+                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="8.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.5s"/>
+                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="8.5s" repeatCount="indefinite" begin="-0.5s"/>
+              </circle>
+            </svg>
+
+            <div class="index-card">
+              <span class="index-card-live">LIVE</span>
+              <div class="index-card-name">EI-META 综合</div>
+              <div class="index-card-value">
+                86.5
+                <span class="index-card-change">↑ 2.3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ HERO METRICS ============ -->
+  <section class="hero-metrics">
+    <div class="section-shell">
+      <div class="metrics-bar">
+        <div class="metric-item">
+          <span class="hero-metric-num">184+</span>
+          <span class="hero-metric-label">已收录数据集</span>
+        </div>
+        <div class="metric-item">
+          <span class="hero-metric-num">4+</span>
+          <span class="hero-metric-label">核心能力领域</span>
+        </div>
+        <div class="metric-item">
+          <span class="hero-metric-num">32+</span>
+          <span class="hero-metric-label">细分测评任务</span>
+        </div>
+        <div class="metric-item">
+          <span class="hero-metric-num">28+</span>
+          <span class="hero-metric-label">参评前沿模型</span>
+        </div>
+      </div>
+      <span class="hero-metric-update">数据更新时间 2026.07</span>
+    </div>
+  </section>
+
+  <!-- ============ 四大核心能力领域 ============ -->
+  <section class="framework-section section-space">
+    <div class="section-shell">
+      <div class="section-header reveal">
+        <span class="section-label">EVALUATION FRAMEWORK</span>
+        <h2 class="section-title">四大核心能力领域</h2>
+        <p class="section-desc" style="margin-top:16px;">
+          以权重化结构组织测评任务，覆盖从情绪识别到安全交互的完整链路。
+        </p>
+      </div>
+
+      <div class="framework-grid">
+        <div class="card card-hover reveal">
+          <span class="card-num">01</span>
+          <h3 class="card-title">情绪感知</h3>
+          <span class="card-weight">权重 25%</span>
+          <ul class="card-list">
+            <li>离散情绪分类</li>
+            <li>效价—唤醒回归</li>
+            <li>跨模态一致性</li>
+          </ul>
+        </div>
+        <div class="card card-hover reveal">
+          <span class="card-num">02</span>
+          <h3 class="card-title">情感理解</h3>
+          <span class="card-weight">权重 30%</span>
+          <ul class="card-list">
+            <li>情绪原因推理</li>
+            <li>细粒度情绪理解</li>
+            <li>文化语境识别</li>
+          </ul>
+        </div>
+        <div class="card card-hover reveal">
+          <span class="card-num">03</span>
+          <h3 class="card-title">共情回应</h3>
+          <span class="card-weight">权重 25%</span>
+          <ul class="card-list">
+            <li>共情策略选择</li>
+            <li>回应质量评估</li>
+            <li>长期情绪陪伴</li>
+          </ul>
+        </div>
+        <div class="card card-hover reveal">
+          <span class="card-num">04</span>
+          <h3 class="card-title">安全与伦理</h3>
+          <span class="card-weight">权重 20%</span>
+          <ul class="card-list">
+            <li>心理风险识别</li>
+            <li>偏见与操纵检测</li>
+            <li>安全响应策略</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EI-META 七维 ============ -->
+  <section class="section-space">
+    <div class="section-shell">
+      <div class="section-header reveal">
+        <span class="section-label">EI-META · 7 DIMENSIONS</span>
+        <h2 class="section-title">七维情感智能综合体系</h2>
+        <p class="section-desc" style="margin-top:16px;">
+          将情感大模型从「识别情绪」扩展到「理解、表达、调节、使用、社会适应与安全交互」的综合性测评。
+        </p>
+      </div>
+
+      <div class="eimeta-formula reveal">EI-META = { P, U, E, R, G, S, A }</div>
+
+      <div class="eimeta-grid">
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">P</div>
+          <div class="eimeta-name">情感感知</div>
+          <div class="eimeta-desc">识别表情、语音、文本与情境中的情绪信号</div>
+          <div class="eimeta-keys"><span>类别</span><span>强度</span><span>微表情</span></div>
+        </div>
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">U</div>
+          <div class="eimeta-name">情绪理解</div>
+          <div class="eimeta-desc">解释情绪原因、对象、需求与文化语境</div>
+          <div class="eimeta-keys"><span>因果</span><span>混合</span><span>隐含</span></div>
+        </div>
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">E</div>
+          <div class="eimeta-name">情绪表达</div>
+          <div class="eimeta-desc">生成恰当、真实、可理解的语言与多模态表达</div>
+          <div class="eimeta-keys"><span>安慰</span><span>鼓励</span><span>语气</span></div>
+        </div>
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">R</div>
+          <div class="eimeta-name">情绪调节</div>
+          <div class="eimeta-desc">管理焦虑、重评冲突、转移注意并稳定互动</div>
+          <div class="eimeta-keys"><span>认知重评</span><span>冲突降级</span></div>
+        </div>
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">G</div>
+          <div class="eimeta-name">情绪使用</div>
+          <div class="eimeta-desc">把情绪作为注意、判断和行动决策的信息</div>
+          <div class="eimeta-keys"><span>风险偏好</span><span>任务匹配</span></div>
+        </div>
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">S</div>
+          <div class="eimeta-name">社会适应</div>
+          <div class="eimeta-desc">理解角色、关系、礼貌、文化规范与群体情绪</div>
+          <div class="eimeta-keys"><span>礼貌面子</span><span>关系修复</span></div>
+        </div>
+        <div class="eimeta-card reveal">
+          <div class="eimeta-letter">A</div>
+          <div class="eimeta-name">安全交互</div>
+          <div class="eimeta-desc">识别危机、保持边界并给出负责任回应</div>
+          <div class="eimeta-keys"><span>危机回应</span><span>隐私保护</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 公共数据集预览（深色） ============ -->
+  <section class="dark-section section-space">
+    <div class="section-shell">
+      <div class="section-header-row" style="margin-bottom:40px;">
+        <div class="reveal">
+          <span class="section-label">PUBLIC DATASETS</span>
+          <h2 class="section-title">公共数据集</h2>
+          <p class="section-desc" style="margin-top:16px;">
+            覆盖 4 个大类、33 个细分任务的 193 个可验证评测条目，连接数据、任务、指标与测评能力。
+          </p>
+        </div>
+        <div class="reveal" style="text-align:right;flex-shrink:0;">
+          <div class="stat-big">193</div>
+          <div class="stat-sub">可验证评测条目</div>
+        </div>
+      </div>
+
+      <div class="preview-entries">
+        <a href="datasets.html" class="preview-entry reveal">
+          <span class="ds-tag ds-tag-affective">情感共情</span>
+          <span class="preview-entry-name">MER2023-MULTI</span>
+          <span class="preview-entry-meta">2023 · 音频 + 视频双模态</span>
+        </a>
+        <a href="datasets.html" class="preview-entry reveal">
+          <span class="ds-tag ds-tag-cognitive">认知共情</span>
+          <span class="preview-entry-name">ECC</span>
+          <span class="preview-entry-meta">情绪原因与对象推理</span>
+        </a>
+        <a href="datasets.html" class="preview-entry reveal">
+          <span class="ds-tag ds-tag-concern">共情关怀</span>
+          <span class="preview-entry-name">EmoSupportBench</span>
+          <span class="preview-entry-meta">共情回应生成</span>
+        </a>
+        <a href="datasets.html" class="preview-entry reveal">
+          <span class="ds-tag ds-tag-safety">安全交互</span>
+          <span class="preview-entry-name">QRPanicAnxiety</span>
+          <span class="preview-entry-meta">高风险情绪与危机识别</span>
+        </a>
+      </div>
+
+      <div style="margin-top:36px;" class="reveal">
+        <a href="datasets.html" class="btn btn-light">浏览全部 193 条评测条目 →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MEI-Empathy-M ============ -->
+  <section class="framework-section section-space">
+    <div class="section-shell">
+      <div class="section-header reveal">
+        <span class="section-label">MEI-EMPATHY-M · EMPIRICAL VIEW</span>
+        <h2 class="section-title">四维实证评测视图</h2>
+        <p class="section-desc" style="margin-top:16px;">
+          EI-META 回答「应当评测哪些能力」，MEI-Empathy-M 则把公开数据、任务和结果组织为可复核的四维实证视图。
+        </p>
+      </div>
+
+      <div class="metrics-bar reveal" style="margin-bottom:48px;">
+        <div class="metric-item">
+          <span class="metric-num">214</span>
+          <span class="metric-label">模型×任务指标记录</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-num">42</span>
+          <span class="metric-label">任务变体</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-num">30</span>
+          <span class="metric-label">数据来源</span>
+        </div>
+        <div class="metric-item">
+          <span class="metric-num">2026-07-29</span>
+          <span class="metric-label">结果快照日期</span>
+        </div>
+      </div>
+
+      <div class="mei-layout">
+        <div class="mei-cards">
+          <div class="mei-card reveal">
+            <span class="mei-card-num">01</span>
+            <div class="mei-card-title">情感共情</div>
+            <div class="mei-card-en">Affective Empathy</div>
+            <p>识别文本、表情、语音、图像与视频中的情绪类别、强度、极性、变化及跨模态冲突。</p>
+          </div>
+          <div class="mei-card reveal">
+            <span class="mei-card-num">02</span>
+            <div class="mei-card-title">认知共情</div>
+            <div class="mei-card-en">Cognitive Empathy</div>
+            <p>推断情绪原因、意图、信念、需求、关系和社会情境，完成观点采择与社会推理。</p>
+          </div>
+          <div class="mei-card reveal">
+            <span class="mei-card-num">03</span>
+            <div class="mei-card-title">共情关怀</div>
+            <div class="mei-card-en">Empathic Concern</div>
+            <p>把理解转化为尊重、具体、适度的支持策略，并保持语气、角色与多模态回应一致。</p>
+          </div>
+          <div class="mei-card reveal">
+            <span class="mei-card-num">04</span>
+            <div class="mei-card-title">安全交互</div>
+            <div class="mei-card-en">Safe &amp; Accountable Interaction</div>
+            <p>识别危机、操纵、隐私和依赖风险，在帮助用户的同时维护事实、专业与安全边界。</p>
+          </div>
+        </div>
+
+        <div class="radar-wrap reveal">
+          <div class="radar-title">四大类评测条目覆盖</div>
+          <div class="radar-sub">193 条评测条目分布 · 更新 2026-07-27</div>
+          <svg class="radar-svg" viewBox="0 0 320 300" aria-hidden="true">
+            <polygon points="160,40 270,150 160,260 50,150" fill="none" stroke="#d9e5f5"/>
+            <polygon points="160,67.5 242.5,150 160,232.5 77.5,150" fill="none" stroke="#d9e5f5"/>
+            <polygon points="160,95 215,150 160,205 105,150" fill="none" stroke="#d9e5f5"/>
+            <polygon points="160,122.5 187.5,150 160,177.5 132.5,150" fill="none" stroke="#d9e5f5"/>
+            <line x1="160" y1="40" x2="160" y2="260" stroke="#e8eff9"/>
+            <line x1="50" y1="150" x2="270" y2="150" stroke="#e8eff9"/>
+            <polygon class="radar-shape" points="160,56 270,150 160,226.3 97.9,150"
+              fill="rgba(22,119,255,.16)" stroke="#1677ff" stroke-width="2"/>
+            <circle cx="160" cy="56" r="4" fill="#1677ff"/>
+            <circle cx="270" cy="150" r="4" fill="#705cff"/>
+            <circle cx="160" cy="226.3" r="4" fill="#64b5ff"/>
+            <circle cx="97.9" cy="150" r="4" fill="#73c4ff"/>
+            <text x="160" y="24" text-anchor="middle" class="radar-axis-label">情感共情 · 53</text>
+            <text x="282" y="154" text-anchor="start" class="radar-axis-label">认知共情 · 62</text>
+            <text x="160" y="284" text-anchor="middle" class="radar-axis-label">共情关怀 · 43</text>
+            <text x="38" y="154" text-anchor="end" class="radar-axis-label">安全交互 · 35</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chip-row reveal" style="margin-top:32px;">
+        <span class="theory-label">主要模型家族</span>
+        <span class="chip">GPT-5.5</span>
+        <span class="chip">Claude Opus 4.6</span>
+        <span class="chip">Gemini 3.1 Pro</span>
+        <span class="chip">MiMo-V2.5</span>
+        <span class="chip">DeepSeek-V4-Flash</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 榜单预览 ============ -->
+  <section class="section-space">
+    <div class="section-shell">
+      <div class="section-header-row" style="margin-bottom:40px;">
+        <div class="reveal">
+          <span class="section-label">LEADERBOARD</span>
+          <h2 class="section-title">模型榜单</h2>
+          <p class="section-desc" style="margin-top:16px;">
+            覆盖 MER / ABAW / MuSe 多任务，支持按赛道筛选，持续社区提交。
+          </p>
+        </div>
+        <a href="leaderboard.html" class="btn-link reveal">查看完整榜单 →</a>
+      </div>
+
+      <div class="data-table-wrap reveal">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>排名</th><th>模型</th><th>组织</th><th>综合得分</th><th>赛道</th><th>更新日期</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="lb-rank lb-rank-1">1</td>
+              <td class="table-name">Claude 3.5 Sonnet</td>
+              <td>Anthropic</td>
+              <td class="lb-score">89.4</td>
+              <td><span class="lb-track-tag">MER-FG</span></td>
+              <td class="lb-date">2026-05-01</td>
+            </tr>
+            <tr>
+              <td class="lb-rank lb-rank-2">2</td>
+              <td class="table-name">GPT-4o</td>
+              <td>OpenAI</td>
+              <td class="lb-score">88.7</td>
+              <td><span class="lb-track-tag">MER-SEMI</span></td>
+              <td class="lb-date">2026-04-28</td>
+            </tr>
+            <tr>
+              <td class="lb-rank lb-rank-3">3</td>
+              <td class="table-name">Qwen2.5-VL-72B</td>
+              <td>Alibaba</td>
+              <td class="lb-score">86.9</td>
+              <td><span class="lb-track-tag">MER-FG</span></td>
+              <td class="lb-date">2026-05-03</td>
+            </tr>
+            <tr>
+              <td class="lb-rank">4</td>
+              <td class="table-name">Gemini 2.0 Pro</td>
+              <td>Google</td>
+              <td class="lb-score">85.8</td>
+              <td><span class="lb-track-tag">ABAW Multi-Task</span></td>
+              <td class="lb-date">2026-04-20</td>
+            </tr>
+            <tr>
+              <td class="lb-rank">5</td>
+              <td class="table-name">Qwen2.5-72B-Instruct</td>
+              <td>Alibaba</td>
+              <td class="lb-score">84.5</td>
+              <td><span class="lb-track-tag">MER-SEMI</span></td>
+              <td class="lb-date">2026-05-02</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 平台目标 ============ -->
+  <section class="framework-section section-space-sm">
+    <div class="section-shell">
+      <div class="section-header reveal" style="text-align:center;">
+        <span class="section-label">PLATFORM GOALS</span>
+        <h2 class="section-title" style="font-size:clamp(26px,3vw,38px);">平台目标</h2>
+      </div>
+      <div class="goal-flow reveal">
+        <div class="goal-node">
+          <div class="goal-node-icon">STEP 1</div>
+          <div class="goal-node-text">沉淀数据资产</div>
+        </div>
+        <div class="goal-node">
+          <div class="goal-node-icon">STEP 2</div>
+          <div class="goal-node-text">支撑模型研发</div>
+        </div>
+        <div class="goal-node">
+          <div class="goal-node-icon">STEP 3</div>
+          <div class="goal-node-text">综合情感智能评测</div>
+        </div>
+        <div class="goal-node">
+          <div class="goal-node-icon">STEP 4</div>
+          <div class="goal-node-text">真实交互能力验证</div>
+        </div>
+        <div class="goal-node">
+          <div class="goal-node-icon">STEP 5</div>
+          <div class="goal-node-text">安全伦理保障</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <section class="cta-section section-space-sm">
+    <div class="section-shell">
+      <h2 class="cta-title reveal">提交你的模型评测结果</h2>
+      <p class="cta-desc reveal">
+        按照统一协议提交 P / U / E / R / G / S / A 维度评测结果，进入社区复核流程。
+      </p>
+      <div class="cta-actions reveal">
+        <button class="btn btn-primary" data-dialog-open>了解提交要求 ↗</button>
+        <a class="btn btn-light" href="https://github.com/weizhi002/turing-2.0/issues/new?labels=evaluation" target="_blank" rel="noopener">GitHub 讨论 ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand">
+            <svg class="brand-symbol brand-ai" viewBox="0 0 42 42" fill="none" aria-hidden="true">
+              <path d="M21 2.8 36.8 12v18L21 39.2 5.2 30V12L21 2.8Z" stroke="#64B5FF" stroke-width="2"/>
+              <path d="m21 8 11 6.4v12.7L21 33.5 10 27.1V14.4L21 8Z" stroke="#73C4FF"/>
+              <line x1="21" y1="11" x2="21" y2="31" stroke="#73C4FF" stroke-width="1.2" stroke-opacity="0.45" stroke-dasharray="2 2"/>
+              <line x1="10" y1="21" x2="32" y2="21" stroke="#73C4FF" stroke-width="1.2" stroke-opacity="0.45" stroke-dasharray="2 2"/>
+              <path d="M21 21 Q24.6 17.4 28 14" stroke="#A89BFF" stroke-width="1.1" stroke-opacity="0.85" fill="none"/>
+              <path d="M21 21 Q17.4 17.4 14 14" stroke="#73C4FF" stroke-width="1.1" stroke-opacity="0.85" fill="none"/>
+              <path d="M21 21 Q17.4 24.6 14 28" stroke="#9FD8FF" stroke-width="1.1" stroke-opacity="0.85" fill="none"/>
+              <path d="M21 21 Q24.6 24.6 28 28" stroke="#A9D8FF" stroke-width="1.1" stroke-opacity="0.85" fill="none"/>
+              <circle cx="28" cy="14" r="2.4" fill="#A89BFF"/>
+              <circle cx="14" cy="14" r="2.4" fill="#73C4FF"/>
+              <circle cx="14" cy="28" r="2.4" fill="#9FD8FF"/>
+              <circle cx="28" cy="28" r="2.4" fill="#A9D8FF"/>
+              <circle cx="21" cy="21" r="5" fill="#64B5FF"/>
+              <circle cx="21" cy="21" r="2.3" fill="#D6ECFF"/>
+              <circle cx="5.2" cy="12" r="1.8" fill="#A89BFF"/>
+              <circle cx="36.8" cy="30" r="1.8" fill="#64B5FF"/>
+            </svg>
+            <span class="brand-word">
+              <span>图灵 <b>2.0</b></span>
+              <small>EMOTIONAL INTELLIGENCE AI</small>
+            </span>
+          </a>
+          <p>大模型情感智能开放测评平台——从情绪感知、情感理解，到共情回应与风险识别。</p>
+          <p class="footer-tagline">开放 · 透明 · 可复现</p>
+        </div>
+
+        <div class="footer-col">
+          <h4>导航页面</h4>
+          <a href="index.html">首页</a>
+          <a href="datasets.html">公共数据集</a>
+          <a href="framework.html">测评框架</a>
+          <a href="owned.html">自有数据集</a>
+          <a href="leaderboard.html">模型榜单</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>能力领域</h4>
+          <a href="framework.html">情绪感知</a>
+          <a href="framework.html">情感理解</a>
+          <a href="framework.html">共情回应</a>
+          <a href="framework.html">安全与伦理</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>联系与提交</h4>
+          <a href="https://github.com/weizhi002/turing-2.0/issues/new?labels=evaluation" target="_blank" rel="noopener">GitHub 讨论 ↗</a>
+          <span class="footer-static">benchmark@example.com</span>
+          <span class="footer-static">Demo 演示用途 · 数据持续复核</span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        © <span data-year>2026</span> Turing 2.0 Contributors · 大模型情感智能开放测评平台
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ SUBMIT DIALOG ============ -->
+  <dialog id="submit-dialog">
+    <div class="dialog-inner">
+      <button class="dialog-close" aria-label="关闭">×</button>
+      <h3 class="dialog-title">提交结果所需信息</h3>
+      <p class="dialog-sub">请按以下四项要求准备评测提交材料</p>
+
+      <div class="dialog-steps">
+        <div class="dialog-step">
+          <span class="dialog-step-num">1</span>
+          <p><b>模型与版本</b><span>模型名称、参数规模、模态输入、推理配置和发布日期</span></p>
+        </div>
+        <div class="dialog-step">
+          <span class="dialog-step-num">2</span>
+          <p><b>评测维度</b><span>明确提交 P / U / E / R / G / S / A 中哪些维度，以及对应任务集</span></p>
+        </div>
+        <div class="dialog-step">
+          <span class="dialog-step-num">3</span>
+          <p><b>数据与协议</b><span>列出使用的数据集、划分方式、许可证和是否包含私有测试集</span></p>
+        </div>
+        <div class="dialog-step">
+          <span class="dialog-step-num">4</span>
+          <p><b>指标与证据</b><span>提供客观指标、人工评分规则、失败案例和可复现实验脚本</span></p>
+        </div>
+      </div>
+
+      <a class="btn btn-primary" style="width:100%;justify-content:center;" href="https://github.com/weizhi002/turing-2.0/issues/new?labels=evaluation" target="_blank" rel="noopener">前往 GitHub 提交 ↗</a>
+      <p class="dialog-demo-note">Demo 演示用途，数据持续复核；正式发布前联系邮箱需替换。</p>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>
