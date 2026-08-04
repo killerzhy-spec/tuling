@@ -13,7 +13,8 @@
     activeId: null,
     draft: null,
     syncing: false,
-    supportsAuthorToken: true
+    supportsAuthorToken: true,
+    supportsAnchorColumns: true
   };
 
   var layer;
@@ -61,17 +62,140 @@
     });
   }
 
-  function supportsAuthorTokenError(error) {
+  function isMissingColumnError(error, columnName) {
     var text = String(error && error.message || '');
-    return /author_token/i.test(text) && (/42703/.test(text) || /does not exist/i.test(text));
+    var column = String(columnName || '').toLowerCase();
+    if (!column || text.toLowerCase().indexOf(column) === -1) return false;
+    return /42703|PGRST204/i.test(text) || /does not exist|could not find/i.test(text);
+  }
+
+  function clamp01(value) {
+    return Math.max(0, Math.min(1, value));
+  }
+
+  function escapeCssIdentifier(value) {
+    if (window.CSS && typeof window.CSS.escape === 'function') return window.CSS.escape(value);
+    return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+  }
+
+  function buildElementSelector(element) {
+    if (!element || element.nodeType !== 1) return '';
+    if (element.id) return '#' + escapeCssIdentifier(element.id);
+
+    var parts = [];
+    var node = element;
+    while (node && node.nodeType === 1 && node !== document.body && parts.length < 7) {
+      var part = node.tagName.toLowerCase();
+      if (node.id) {
+        part = '#' + escapeCssIdentifier(node.id);
+        parts.unshift(part);
+        break;
+      }
+
+      if (node.classList && node.classList.length) {
+        part += '.' + escapeCssIdentifier(node.classList.item(0));
+      } else if (node.parentNode) {
+        var siblings = node.parentNode.children;
+        var index = 1;
+        for (var i = 0; i < siblings.length; i += 1) {
+          if (siblings[i] === node) {
+            index = i + 1;
+            break;
+          }
+        }
+        part += ':nth-child(' + index + ')';
+      }
+      parts.unshift(part);
+      node = node.parentElement;
+    }
+
+    return parts.join(' > ');
+  }
+
+  function resolveAnchorDescriptor(target, clientX, clientY) {
+    var semantic = {
+      section: true,
+      article: true,
+      main: true,
+      header: true,
+      footer: true,
+      nav: true,
+      aside: true,
+      li: true,
+      figure: true,
+      table: true,
+      tr: true,
+      td: true,
+      th: true,
+      img: true,
+      canvas: true,
+      svg: true,
+      form: true,
+      button: true,
+      a: true
+    };
+
+    var node = target && target.nodeType === 1 ? target : (target && target.parentElement);
+    var anchor = null;
+    while (node && node !== document.body) {
+      var tag = node.tagName ? node.tagName.toLowerCase() : '';
+      if (node.hasAttribute('data-comment-anchor') || node.id || semantic[tag]) {
+        anchor = node;
+        break;
+      }
+      node = node.parentElement;
+    }
+    if (!anchor) anchor = document.body;
+
+    var rect = anchor.getBoundingClientRect();
+    var width = Math.max(rect.width, 1);
+    var height = Math.max(rect.height, 1);
+    var selector = buildElementSelector(anchor);
+    if (!selector) return null;
+
+    return {
+      selector: selector,
+      offsetX: Number(clamp01((clientX - rect.left) / width).toFixed(6)),
+      offsetY: Number(clamp01((clientY - rect.top) / height).toFixed(6))
+    };
+  }
+
+  function getPinPosition(comment) {
+    if (comment && comment.anchorSelector) {
+      var anchor = document.querySelector(comment.anchorSelector);
+      if (anchor) {
+        var rect = anchor.getBoundingClientRect();
+        return {
+          x: window.scrollX + rect.left + rect.width * clamp01(comment.anchorOffsetX || 0),
+          y: window.scrollY + rect.top + rect.height * clamp01(comment.anchorOffsetY || 0)
+        };
+      }
+    }
+
+    return {
+      x: Number(comment.x) || 0,
+      y: Number(comment.y) || 0
+    };
+  }
+
+  function createRafThrottle(fn) {
+    var queued = false;
+    return function () {
+      if (queued) return;
+      queued = true;
+      window.requestAnimationFrame(function () {
+        queued = false;
+        fn();
+      });
+    };
   }
 
   function loadComments() {
     if (state.syncing) return Promise.resolve();
     state.syncing = true;
-    var fields = state.supportsAuthorToken
-      ? 'id,parent_id,author_token,x,y,author,message,resolved,created_at'
-      : 'id,parent_id,x,y,author,message,resolved,created_at';
+    var fields = 'id,parent_id,x,y,author,message,resolved,created_at';
+    if (state.supportsAuthorToken) fields += ',author_token';
+    if (state.supportsAnchorColumns) fields += ',anchor_selector,anchor_offset_x,anchor_offset_y';
     var query = '?page_path=eq.' + encodeURIComponent(pagePath) +
       '&select=' + fields + '&order=created_at.asc';
     return apiRequest(query).then(function (rows) {
@@ -93,8 +217,17 @@
       renderPins();
       if (state.activeId) renderPanel();
     }).catch(function (error) {
-      if (state.supportsAuthorToken && supportsAuthorTokenError(error)) {
+      if (state.supportsAuthorToken && isMissingColumnError(error, 'author_token')) {
         state.supportsAuthorToken = false;
+        state.syncing = false;
+        return loadComments();
+      }
+      if (state.supportsAnchorColumns && (
+        isMissingColumnError(error, 'anchor_selector') ||
+        isMissingColumnError(error, 'anchor_offset_x') ||
+        isMissingColumnError(error, 'anchor_offset_y')
+      )) {
+        state.supportsAnchorColumns = false;
         state.syncing = false;
         return loadComments();
       }
@@ -111,6 +244,9 @@
       authorToken: row.author_token || '',
       x: row.x,
       y: row.y,
+      anchorSelector: row.anchor_selector || '',
+      anchorOffsetX: Number(row.anchor_offset_x),
+      anchorOffsetY: Number(row.anchor_offset_y),
       author: row.author,
       message: row.message,
       resolved: row.resolved,
@@ -183,6 +319,12 @@
     });
 
     document.addEventListener('click', handlePageClick, true);
+    var syncPinPositions = createRafThrottle(function () {
+      if (!state.comments.length && !state.draft) return;
+      renderPins();
+    });
+    window.addEventListener('scroll', syncPinPositions, { passive: true });
+    window.addEventListener('resize', syncPinPositions);
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') closePanel();
     });
@@ -211,7 +353,8 @@
     event.stopPropagation();
     state.draft = {
       x: Math.max(16, Math.min(document.documentElement.scrollWidth - 16, event.pageX)),
-      y: Math.max(16, event.pageY)
+      y: Math.max(16, event.pageY),
+      anchor: resolveAnchorDescriptor(event.target, event.clientX, event.clientY)
     };
     state.activeId = null;
     setPlacing(false);
@@ -222,9 +365,10 @@
   function renderPins() {
     var visible = state.comments.filter(function (comment) { return !comment.resolved; });
     layer.innerHTML = visible.map(function (comment) {
+      var position = getPinPosition(comment);
       var index = state.comments.indexOf(comment) + 1;
       return '<button class="comment-pin' + (state.activeId === comment.id ? ' active' : '') +
-        '" type="button" data-comment-id="' + comment.id + '" style="left:' + comment.x + 'px;top:' + comment.y + 'px"' +
+        '" type="button" data-comment-id="' + comment.id + '" style="left:' + position.x + 'px;top:' + position.y + 'px"' +
         ' aria-label="查看第 ' + index + ' 条反馈">' + index + '</button>';
     }).join('');
 
@@ -329,6 +473,11 @@
           resolved: false
         };
         if (state.supportsAuthorToken) payload.author_token = authorToken;
+        if (state.supportsAnchorColumns && state.draft.anchor) {
+          payload.anchor_selector = state.draft.anchor.selector;
+          payload.anchor_offset_x = state.draft.anchor.offsetX;
+          payload.anchor_offset_y = state.draft.anchor.offsetY;
+        }
         setBusy(createForm, true);
         apiRequest('', {
           method: 'POST',
