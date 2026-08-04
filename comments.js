@@ -427,7 +427,7 @@
     toggle.type = 'button';
     toggle.title = '反馈留言';
     toggle.setAttribute('aria-label', '开启反馈留言模式');
-    toggle.innerHTML = icon('comment') + '<span class="comment-badge"></span>';
+    toggle.innerHTML = icon('comment');
 
     listToggle = document.createElement('button');
     listToggle.className = 'comment-list-toggle';
@@ -495,7 +495,7 @@
     toggle.classList.toggle('active', enabled);
     if (listToggle) listToggle.classList.toggle('active', state.listOpen);
     toggle.setAttribute('aria-label', enabled ? '退出反馈留言模式' : '开启反馈留言模式');
-    toggle.innerHTML = icon(enabled ? 'close' : 'comment') + '<span class="comment-badge"></span>';
+    toggle.innerHTML = icon(enabled ? 'close' : 'comment');
     updateBadge();
   }
 
@@ -547,11 +547,7 @@
   }
 
   function updateBadge() {
-    var badge = toggle && toggle.querySelector('.comment-badge');
-    if (!badge) return;
     var count = state.comments.filter(function (comment) { return !comment.resolved; }).length;
-    badge.textContent = count || '';
-    badge.hidden = count === 0;
     if (!listToggle) return;
 
     var isMobile = window.innerWidth <= 860;
