@@ -6,6 +6,7 @@
   var pathEnd = location.pathname.split('/').filter(Boolean).pop() || '';
   var pagePath = /\.html$/i.test(pathEnd) ? pathEnd : 'index.html';
   var authorTokenKey = 'turing-comment-author-token';
+  var legacyAnchorCacheKey = 'turing-comment-legacy-anchor-cache';
   var authorToken = ensureAuthorToken();
   var state = {
     comments: [],
@@ -20,6 +21,7 @@
   var layer;
   var toggle;
   var panel;
+  var legacyAnchorCache;
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -42,6 +44,40 @@
       token = Date.now().toString(36) + Math.random().toString(36).slice(2, 11);
     }
     return token;
+  }
+
+  function readLegacyAnchorCache() {
+    if (legacyAnchorCache) return legacyAnchorCache;
+    try {
+      legacyAnchorCache = JSON.parse(localStorage.getItem(legacyAnchorCacheKey) || '{}');
+      if (!legacyAnchorCache || typeof legacyAnchorCache !== 'object') legacyAnchorCache = {};
+    } catch (error) {
+      legacyAnchorCache = {};
+    }
+    return legacyAnchorCache;
+  }
+
+  function getCachedAnchor(commentId) {
+    var cache = readLegacyAnchorCache();
+    var pageCache = cache[pagePath] || {};
+    return pageCache[String(commentId)] || null;
+  }
+
+  function setCachedAnchor(commentId, anchor) {
+    if (!commentId || !anchor || !anchor.selector) return;
+    var cache = readLegacyAnchorCache();
+    if (!cache[pagePath]) cache[pagePath] = {};
+    cache[pagePath][String(commentId)] = {
+      selector: anchor.selector,
+      offsetX: Number(clamp01(anchor.offsetX).toFixed(6)),
+      offsetY: Number(clamp01(anchor.offsetY).toFixed(6))
+    };
+    legacyAnchorCache = cache;
+    try {
+      localStorage.setItem(legacyAnchorCacheKey, JSON.stringify(cache));
+    } catch (error) {
+      // Ignore quota/security errors; runtime anchor still works for this session.
+    }
   }
 
   function apiRequest(query, options) {
@@ -160,6 +196,55 @@
     };
   }
 
+  function getElementAtPagePoint(pageX, pageY) {
+    var clientX = pageX - window.scrollX;
+    var clientY = pageY - window.scrollY;
+    if (clientX < 0 || clientY < 0 || clientX > window.innerWidth || clientY > window.innerHeight) {
+      return null;
+    }
+
+    var targetX = Math.max(0, Math.min(window.innerWidth - 1, clientX));
+    var targetY = Math.max(0, Math.min(window.innerHeight - 1, clientY));
+    var prevDisplay = '';
+    if (layer) {
+      prevDisplay = layer.style.display;
+      layer.style.display = 'none';
+    }
+    var element = document.elementFromPoint(targetX, targetY);
+    if (layer) layer.style.display = prevDisplay;
+    if (!element) return null;
+    return {
+      element: element,
+      clientX: targetX,
+      clientY: targetY
+    };
+  }
+
+  function inferLegacyAnchor(comment) {
+    if (!comment || comment.anchorSelector) return;
+    var x = Number(comment.x);
+    var y = Number(comment.y);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+
+    var cached = getCachedAnchor(comment.id);
+    if (cached && cached.selector) {
+      comment.anchorSelector = cached.selector;
+      comment.anchorOffsetX = Number(cached.offsetX);
+      comment.anchorOffsetY = Number(cached.offsetY);
+      return;
+    }
+
+    var hit = getElementAtPagePoint(x, y);
+    if (!hit) return;
+    var anchor = resolveAnchorDescriptor(hit.element, hit.clientX, hit.clientY);
+    if (!anchor) return;
+
+    comment.anchorSelector = anchor.selector;
+    comment.anchorOffsetX = anchor.offsetX;
+    comment.anchorOffsetY = anchor.offsetY;
+    setCachedAnchor(comment.id, anchor);
+  }
+
   function getPinPosition(comment) {
     if (comment && comment.anchorSelector) {
       var anchor = document.querySelector(comment.anchorSelector);
@@ -204,6 +289,7 @@
       rows.forEach(function (row) {
         if (row.parent_id) return;
         var comment = mapRow(row);
+        inferLegacyAnchor(comment);
         comment.replies = [];
         roots.push(comment);
         rootsById[comment.id] = comment;
@@ -485,6 +571,9 @@
           body: JSON.stringify(payload)
         }).then(function (rows) {
           state.activeId = rows[0].id;
+          if (rows[0] && rows[0].id && state.draft && state.draft.anchor) {
+            setCachedAnchor(rows[0].id, state.draft.anchor);
+          }
           state.draft = null;
           return loadComments();
         }).catch(function (error) {
