@@ -13,6 +13,7 @@
     placing: false,
     activeId: null,
     draft: null,
+    listOpen: false,
     syncing: false,
     supportsAuthorToken: true,
     supportsAnchorColumns: true
@@ -20,6 +21,7 @@
 
   var layer;
   var toggle;
+  var listToggle;
   var panel;
   var legacyAnchorCache;
 
@@ -368,6 +370,7 @@
   function icon(name) {
     var icons = {
       comment: '<path d="M5 5.8A2.8 2.8 0 0 1 7.8 3h8.4A2.8 2.8 0 0 1 19 5.8v5.4a2.8 2.8 0 0 1-2.8 2.8h-5.7L6 18v-4.3a2.8 2.8 0 0 1-1-2.1V5.8Z"/>',
+      list: '<path d="M4.5 6.5h15m-15 5h15m-15 5h15"/><path d="M2.8 6.5h.4m-.4 5h.4m-.4 5h.4"/>',
       close: '<path d="m6 6 12 12M18 6 6 18"/>',
       check: '<path d="m5 12 4 4L19 6"/>',
       trash: '<path d="M5 7h14M9 7V4h6v3m2 0-1 13H8L7 7m3 4v5m4-5v5"/>',
@@ -388,11 +391,19 @@
     toggle.setAttribute('aria-label', '开启反馈留言模式');
     toggle.innerHTML = icon('comment') + '<span class="comment-badge"></span>';
 
+    listToggle = document.createElement('button');
+    listToggle.className = 'comment-list-toggle';
+    listToggle.type = 'button';
+    listToggle.title = '查看全部反馈';
+    listToggle.setAttribute('aria-label', '查看当前页面全部反馈');
+    listToggle.innerHTML = icon('list');
+
     panel = document.createElement('aside');
     panel.className = 'comment-panel';
     panel.setAttribute('aria-label', '反馈留言');
 
     document.body.appendChild(layer);
+    document.body.appendChild(listToggle);
     document.body.appendChild(toggle);
     document.body.appendChild(panel);
 
@@ -400,8 +411,21 @@
       if (state.activeId || state.draft) {
         closePanel();
       } else {
+        state.listOpen = false;
         setPlacing(!state.placing);
       }
+    });
+
+    listToggle.addEventListener('click', function () {
+      if (state.listOpen) {
+        closePanel();
+        return;
+      }
+      state.listOpen = true;
+      state.activeId = null;
+      state.draft = null;
+      setPlacing(false);
+      renderPanel();
     });
 
     document.addEventListener('click', handlePageClick, true);
@@ -424,8 +448,10 @@
 
   function setPlacing(enabled) {
     state.placing = enabled;
+    if (enabled) state.listOpen = false;
     document.body.classList.toggle('comment-placing', enabled);
     toggle.classList.toggle('active', enabled);
+    if (listToggle) listToggle.classList.toggle('active', state.listOpen);
     toggle.setAttribute('aria-label', enabled ? '退出反馈留言模式' : '开启反馈留言模式');
     toggle.innerHTML = icon(enabled ? 'close' : 'comment') + '<span class="comment-badge"></span>';
     updateBadge();
@@ -442,6 +468,7 @@
       y: Math.max(16, event.pageY),
       anchor: resolveAnchorDescriptor(event.target, event.clientX, event.clientY)
     };
+    state.listOpen = false;
     state.activeId = null;
     setPlacing(false);
     renderPins();
@@ -467,6 +494,7 @@
       pin.addEventListener('click', function (event) {
         event.stopPropagation();
         state.activeId = pin.getAttribute('data-comment-id');
+        state.listOpen = false;
         state.draft = null;
         setPlacing(false);
         renderPins();
@@ -482,6 +510,8 @@
     var count = state.comments.filter(function (comment) { return !comment.resolved; }).length;
     badge.textContent = count || '';
     badge.hidden = count === 0;
+    if (listToggle) listToggle.classList.toggle('has-comments', count > 0);
+    if (listToggle) listToggle.classList.toggle('active', state.listOpen);
   }
 
   function renderPanel() {
@@ -503,6 +533,12 @@
         var textarea = panel.querySelector('textarea');
         if (textarea) textarea.focus();
       }, 0);
+      return;
+    }
+
+    if (state.listOpen) {
+      panel.innerHTML = panelHeader('当前页面反馈') + renderListHtml();
+      bindPanelActions();
       return;
     }
 
@@ -537,11 +573,45 @@
       formatTime(message.createdAt) + '</time></div><p>' + escapeHtml(message.message).replace(/\n/g, '<br>') + '</p></div></article>';
   }
 
+  function renderListHtml() {
+    if (!state.comments.length) {
+      return '<div class="comment-list-empty">当前页面还没有反馈，点击右下角留言按钮即可创建第一条反馈。</div>';
+    }
+
+    var items = state.comments.map(function (item) {
+      var preview = escapeHtml(item.message || '').replace(/\n/g, ' ').slice(0, 54);
+      var suffix = (item.message || '').length > 54 ? '…' : '';
+      var count = (item.replies || []).length;
+      var status = item.resolved ? '已处理' : '进行中';
+      return '<button type="button" class="comment-list-item" data-open-comment="' + item.id + '">' +
+        '<span class="comment-list-top"><b>反馈 #' + (state.comments.indexOf(item) + 1) + '</b><time>' + formatTime(item.createdAt) + '</time></span>' +
+        '<span class="comment-list-body">' + preview + suffix + '</span>' +
+        '<span class="comment-list-meta">' + status + ' · ' + count + ' 条回复</span></button>';
+    }).join('');
+
+    return '<div class="comment-list-wrap">' + items + '</div>';
+  }
+
   function bindPanelActions(comment) {
     var close = panel.querySelector('[data-comment-close]');
     var cancel = panel.querySelector('[data-comment-cancel]');
     if (close) close.addEventListener('click', closePanel);
     if (cancel) cancel.addEventListener('click', closePanel);
+
+    var openButtons = Array.prototype.slice.call(panel.querySelectorAll('[data-open-comment]'));
+    if (openButtons.length) {
+      openButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          state.activeId = button.getAttribute('data-open-comment');
+          state.listOpen = false;
+          state.draft = null;
+          setPlacing(false);
+          renderPins();
+          renderPanel();
+        });
+      });
+      return;
+    }
 
     var createForm = panel.querySelector('[data-new-comment]');
     if (createForm) {
@@ -628,6 +698,7 @@
   function closePanel() {
     state.activeId = null;
     state.draft = null;
+    state.listOpen = false;
     setPlacing(false);
     panel.classList.remove('open');
     panel.innerHTML = '';
