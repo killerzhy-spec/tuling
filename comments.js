@@ -5,6 +5,8 @@
   var API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxheXdqdGh0Z3VvZmJnY2NvaHp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgwMTcsImV4cCI6MjEwMTM2NDAxN30.aswaws2CLwjYZ_hX613UBTFOeMffQQN61JTE7u8xH5o';
   var pathEnd = location.pathname.split('/').filter(Boolean).pop() || '';
   var pagePath = /\.html$/i.test(pathEnd) ? pathEnd : 'index.html';
+  var authorTokenKey = 'turing-comment-author-token';
+  var authorToken = ensureAuthorToken();
   var state = {
     comments: [],
     placing: false,
@@ -24,6 +26,20 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  }
+
+  function ensureAuthorToken() {
+    var token = '';
+    try {
+      token = localStorage.getItem(authorTokenKey) || '';
+      if (!token) {
+        token = Date.now().toString(36) + Math.random().toString(36).slice(2, 11);
+        localStorage.setItem(authorTokenKey, token);
+      }
+    } catch (error) {
+      token = Date.now().toString(36) + Math.random().toString(36).slice(2, 11);
+    }
+    return token;
   }
 
   function apiRequest(query, options) {
@@ -48,7 +64,7 @@
     if (state.syncing) return Promise.resolve();
     state.syncing = true;
     var query = '?page_path=eq.' + encodeURIComponent(pagePath) +
-      '&select=id,parent_id,x,y,author,message,resolved,created_at&order=created_at.asc';
+      '&select=id,parent_id,author_token,x,y,author,message,resolved,created_at&order=created_at.asc';
     return apiRequest(query).then(function (rows) {
       var roots = [];
       var rootsById = {};
@@ -78,6 +94,7 @@
     return {
       id: row.id,
       parentId: row.parent_id,
+      authorToken: row.author_token,
       x: row.x,
       y: row.y,
       author: row.author,
@@ -256,8 +273,13 @@
       '<form class="comment-reply" data-reply>' +
       '<textarea name="message" maxlength="500" rows="3" placeholder="回复这条反馈…" required></textarea>' +
       '<div class="comment-thread-actions"><span class="comment-public-label">公开回复</span>' +
+      (canDelete(comment) ? '<button type="button" class="comment-icon-action danger" data-delete title="删除反馈">' + icon('trash') + '<span>删除</span></button>' : '') +
       '<button type="submit" class="comment-primary comment-send" title="发送回复">' + icon('send') + '</button></div></form>';
     bindPanelActions(comment);
+  }
+
+  function canDelete(comment) {
+    return !!comment && !!comment.authorToken && comment.authorToken === authorToken;
   }
 
   function panelHeader(title) {
@@ -286,6 +308,7 @@
         if (!message) return;
         var payload = {
           page_path: pagePath,
+          author_token: authorToken,
           x: state.draft.x,
           y: state.draft.y,
           author: String(data.get('author') || '').trim() || '匿名访客',
@@ -322,6 +345,7 @@
           body: JSON.stringify({
             parent_id: comment.id,
             page_path: pagePath,
+            author_token: authorToken,
             author: '访客',
             message: message
           })
@@ -330,6 +354,20 @@
           showServiceError(error);
         });
       });
+
+      var deleteBtn = panel.querySelector('[data-delete]');
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function () {
+          if (!window.confirm('确定删除这条反馈及其全部回复吗？')) return;
+          apiRequest('?id=eq.' + encodeURIComponent(comment.id) + '&author_token=eq.' + encodeURIComponent(authorToken), {
+            method: 'DELETE',
+            headers: { Prefer: 'return=minimal' }
+          }).then(function () {
+            closePanel();
+            loadComments();
+          }).catch(showServiceError);
+        });
+      }
 
     }
   }
