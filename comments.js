@@ -3,6 +3,7 @@
 
   var API_URL = 'https://laywjthtguofbgccohzx.supabase.co/rest/v1/page_comments';
   var API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxheXdqdGh0Z3VvZmJnY2NvaHp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgwMTcsImV4cCI6MjEwMTM2NDAxN30.aswaws2CLwjYZ_hX613UBTFOeMffQQN61JTE7u8xH5o';
+  var DELETE_PASSWORD = 'TuLing123';
   var pathEnd = location.pathname.split('/').filter(Boolean).pop() || '';
   var pagePath = /\.html$/i.test(pathEnd) ? pathEnd : 'index.html';
   var authorTokenKey = 'turing-comment-author-token';
@@ -116,6 +117,25 @@
     state.comments = state.comments.filter(function (item) {
       return item.id !== commentId;
     });
+  }
+
+  function clearHiddenComment(commentId) {
+    if (!commentId) return;
+    var cache = readHiddenComments();
+    var pageHidden = cache[pagePath] || {};
+    delete pageHidden[String(commentId)];
+    cache[pagePath] = pageHidden;
+    hiddenCommentCache = cache;
+    try {
+      localStorage.setItem(hiddenCommentsKey, JSON.stringify(cache));
+    } catch (error) {
+      // Ignore localStorage write failures.
+    }
+  }
+
+  function feedbackDisplayId(comment) {
+    if (!comment || !comment.id) return 'FB-UNKNOWN';
+    return 'FB-' + String(comment.id).replace(/-/g, '').slice(0, 8).toUpperCase();
   }
 
   function apiRequest(query, options) {
@@ -627,7 +647,7 @@
       return;
     }
 
-    panel.innerHTML = panelHeader('反馈 #' + (state.comments.indexOf(comment) + 1)) +
+    panel.innerHTML = panelHeader('反馈 #' + (state.comments.indexOf(comment) + 1), comment) +
       '<div class="comment-thread">' + messageHtml(comment) +
       (comment.replies || []).map(messageHtml).join('') + '</div>' +
       '<form class="comment-reply" data-reply>' +
@@ -642,15 +662,16 @@
     return !!comment;
   }
 
-  function panelHeader(title) {
+  function panelHeader(title, comment) {
+    var idLine = comment ? '<span class="comment-panel-id">ID ' + escapeHtml(feedbackDisplayId(comment)) + '</span>' : '';
     return '<div class="comment-panel-head"><div><span class="comment-panel-kicker">COMMENTS</span><h2>' +
-      escapeHtml(title) + '</h2></div><button type="button" class="comment-panel-close" data-comment-close aria-label="关闭">' + icon('close') + '</button></div>';
+      escapeHtml(title) + '</h2>' + idLine + '</div><button type="button" class="comment-panel-close" data-comment-close aria-label="关闭">' + icon('close') + '</button></div>';
   }
 
   function messageHtml(message) {
     return '<article class="comment-message"><div class="comment-avatar">' + escapeHtml((message.author || '匿名').slice(0, 1).toUpperCase()) +
       '</div><div><div class="comment-meta"><b>' + escapeHtml(message.author || '匿名访客') + '</b><time>' +
-      formatTime(message.createdAt) + '</time></div><p>' + escapeHtml(message.message).replace(/\n/g, '<br>') + '</p></div></article>';
+      formatTime(message.createdAt) + '</time></div><div class="comment-message-id">' + escapeHtml(feedbackDisplayId(message)) + '</div><p>' + escapeHtml(message.message).replace(/\n/g, '<br>') + '</p></div></article>';
   }
 
   function renderListHtml() {
@@ -665,6 +686,7 @@
       var status = item.resolved ? '已处理' : '进行中';
       return '<button type="button" class="comment-list-item" data-open-comment="' + item.id + '">' +
         '<span class="comment-list-top"><b>反馈 #' + (state.comments.indexOf(item) + 1) + '</b><time>' + formatTime(item.createdAt) + '</time></span>' +
+        '<span class="comment-list-id">' + escapeHtml(feedbackDisplayId(item)) + '</span>' +
         '<span class="comment-list-body">' + preview + suffix + '</span>' +
         '<span class="comment-list-meta">' + status + ' · ' + count + ' 条回复</span></button>';
     }).join('');
@@ -761,10 +783,25 @@
       var deleteBtn = panel.querySelector('[data-delete]');
       if (deleteBtn) {
         deleteBtn.addEventListener('click', function () {
-          if (!window.confirm('确定隐藏这条反馈吗？（仅在当前浏览器生效）')) return;
-          hideCommentLocally(comment.id);
-          closePanel();
-          renderPins();
+          var password = window.prompt('请输入删除密码以彻底删除该反馈');
+          if (password == null) return;
+          if (password !== DELETE_PASSWORD) {
+            window.alert('密码错误，无法删除反馈');
+            return;
+          }
+          if (!window.confirm('确认后将从数据库彻底删除这条反馈及其全部回复，是否继续？')) return;
+          apiRequest('?id=eq.' + encodeURIComponent(comment.id), {
+            method: 'DELETE',
+            headers: { Prefer: 'return=minimal' }
+          }).then(function () {
+            clearHiddenComment(comment.id);
+            state.comments = state.comments.filter(function (item) {
+              return item.id !== comment.id;
+            });
+            closePanel();
+            renderPins();
+            return loadComments();
+          }).catch(showServiceError);
         });
       }
 

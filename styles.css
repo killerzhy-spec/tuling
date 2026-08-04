@@ -1368,6 +1368,16 @@ dialog::backdrop {
   letter-spacing: 0;
 }
 
+.comment-panel-id {
+  display: inline-block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
 .comment-panel-close {
   width: 36px;
   height: 36px;
@@ -1540,6 +1550,14 @@ dialog::backdrop {
   line-height: 1.6;
 }
 
+.comment-list-id {
+  color: var(--blue);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+
 .comment-list-meta {
   color: var(--muted);
   font-size: 11px;
@@ -1581,6 +1599,15 @@ dialog::backdrop {
 
 .comment-meta b { font-size: 13px; font-weight: 600; }
 .comment-meta time { color: var(--muted); font-size: 11px; }
+
+.comment-message-id {
+  margin-top: 4px;
+  color: var(--blue);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
 
 .comment-message p {
   margin-top: 5px;
