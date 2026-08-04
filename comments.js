@@ -3,7 +3,7 @@
 
   var API_URL = 'https://laywjthtguofbgccohzx.supabase.co/rest/v1/page_comments';
   var API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxheXdqdGh0Z3VvZmJnY2NvaHp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgwMTcsImV4cCI6MjEwMTM2NDAxN30.aswaws2CLwjYZ_hX613UBTFOeMffQQN61JTE7u8xH5o';
-  var DELETE_PASSWORD = 'TuLing123';
+  var DELETE_PASSWORD = '000000';
   var pathEnd = location.pathname.split('/').filter(Boolean).pop() || '';
   var pagePath = /\.html$/i.test(pathEnd) ? pathEnd : 'index.html';
   var authorTokenKey = 'turing-comment-author-token';
