@@ -1,12 +1,16 @@
 (function () {
   'use strict';
 
-  var pageKey = 'turing-comments:' + location.pathname.replace(/\/+$/, '');
+  var API_URL = 'https://laywjthtguofbgccohzx.supabase.co/rest/v1/page_comments';
+  var API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxheXdqdGh0Z3VvZmJnY2NvaHp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3ODgwMTcsImV4cCI6MjEwMTM2NDAxN30.aswaws2CLwjYZ_hX613UBTFOeMffQQN61JTE7u8xH5o';
+  var pathEnd = location.pathname.split('/').filter(Boolean).pop() || '';
+  var pagePath = /\.html$/i.test(pathEnd) ? pathEnd : 'index.html';
   var state = {
-    comments: loadComments(),
+    comments: [],
     placing: false,
     activeId: null,
-    draft: null
+    draft: null,
+    syncing: false
   };
 
   var layer;
@@ -22,17 +26,81 @@
       .replace(/'/g, '&#39;');
   }
 
+  function apiRequest(query, options) {
+    var config = options || {};
+    config.headers = Object.assign({
+      apikey: API_KEY,
+      Authorization: 'Bearer ' + API_KEY,
+      'Content-Type': 'application/json'
+    }, config.headers || {});
+    return fetch(API_URL + (query || ''), config).then(function (response) {
+      if (!response.ok) {
+        return response.text().then(function (message) {
+          throw new Error(message || '留言服务请求失败');
+        });
+      }
+      if (response.status === 204) return null;
+      return response.json();
+    });
+  }
+
   function loadComments() {
-    try {
-      var saved = JSON.parse(localStorage.getItem(pageKey) || '[]');
-      return Array.isArray(saved) ? saved : [];
-    } catch (error) {
-      return [];
+    if (state.syncing) return Promise.resolve();
+    state.syncing = true;
+    var query = '?page_path=eq.' + encodeURIComponent(pagePath) +
+      '&select=id,parent_id,x,y,author,message,resolved,created_at&order=created_at.asc';
+    return apiRequest(query).then(function (rows) {
+      var roots = [];
+      var rootsById = {};
+      rows.forEach(function (row) {
+        if (row.parent_id) return;
+        var comment = mapRow(row);
+        comment.replies = [];
+        roots.push(comment);
+        rootsById[comment.id] = comment;
+      });
+      rows.forEach(function (row) {
+        if (row.parent_id && rootsById[row.parent_id]) {
+          rootsById[row.parent_id].replies.push(mapRow(row));
+        }
+      });
+      state.comments = roots;
+      renderPins();
+      if (state.activeId) renderPanel();
+    }).catch(function (error) {
+      showServiceError(error);
+    }).then(function () {
+      state.syncing = false;
+    });
+  }
+
+  function mapRow(row) {
+    return {
+      id: row.id,
+      parentId: row.parent_id,
+      x: row.x,
+      y: row.y,
+      author: row.author,
+      message: row.message,
+      resolved: row.resolved,
+      createdAt: row.created_at
+    };
+  }
+
+  function showServiceError(error) {
+    console.error('Comments service:', error);
+    if (!panel || !panel.classList.contains('open')) return;
+    var note = panel.querySelector('.comment-storage-note');
+    if (note) {
+      note.textContent = '暂时无法连接公共留言服务，请稍后重试';
+      note.classList.add('error');
     }
   }
 
-  function saveComments() {
-    localStorage.setItem(pageKey, JSON.stringify(state.comments));
+  function setBusy(form, busy) {
+    Array.prototype.slice.call(form.querySelectorAll('button, input, textarea')).forEach(function (control) {
+      control.disabled = busy;
+    });
   }
 
   function formatTime(timestamp) {
@@ -89,6 +157,10 @@
     });
 
     renderPins();
+    loadComments();
+    window.setInterval(function () {
+      if (!document.hidden && !state.draft) loadComments();
+    }, 20000);
   }
 
   function setPlacing(enabled) {
@@ -164,7 +236,7 @@
         '<textarea id="comment-message" name="message" maxlength="500" rows="5" placeholder="描述问题或提出建议…" required autofocus></textarea>' +
         '<div class="comment-form-actions"><button type="button" class="comment-secondary" data-comment-cancel>取消</button>' +
         '<button type="submit" class="comment-primary">发布反馈 ' + icon('send') + '</button></div>' +
-        '<p class="comment-storage-note">反馈仅保存在当前浏览器</p></form>';
+        '<p class="comment-storage-note">公开留言，所有访问者均可查看</p></form>';
       bindPanelActions();
       window.setTimeout(function () {
         var textarea = panel.querySelector('textarea');
@@ -183,8 +255,7 @@
       (comment.replies || []).map(messageHtml).join('') + '</div>' +
       '<form class="comment-reply" data-reply>' +
       '<textarea name="message" maxlength="500" rows="3" placeholder="回复这条反馈…" required></textarea>' +
-      '<div class="comment-thread-actions"><button type="button" class="comment-icon-action" data-resolve title="标记为已解决">' + icon('check') + '<span>解决</span></button>' +
-      '<button type="button" class="comment-icon-action danger" data-delete title="删除反馈">' + icon('trash') + '<span>删除</span></button>' +
+      '<div class="comment-thread-actions"><span class="comment-public-label">公开回复</span>' +
       '<button type="submit" class="comment-primary comment-send" title="发送回复">' + icon('send') + '</button></div></form>';
     bindPanelActions(comment);
   }
@@ -213,22 +284,27 @@
         var data = new FormData(createForm);
         var message = String(data.get('message') || '').trim();
         if (!message) return;
-        var item = {
-          id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+        var payload = {
+          page_path: pagePath,
           x: state.draft.x,
           y: state.draft.y,
           author: String(data.get('author') || '').trim() || '匿名访客',
           message: message,
-          createdAt: Date.now(),
-          resolved: false,
-          replies: []
+          resolved: false
         };
-        state.comments.push(item);
-        state.activeId = item.id;
-        state.draft = null;
-        saveComments();
-        renderPins();
-        renderPanel();
+        setBusy(createForm, true);
+        apiRequest('', {
+          method: 'POST',
+          headers: { Prefer: 'return=representation' },
+          body: JSON.stringify(payload)
+        }).then(function (rows) {
+          state.activeId = rows[0].id;
+          state.draft = null;
+          return loadComments();
+        }).catch(function (error) {
+          setBusy(createForm, false);
+          showServiceError(error);
+        });
       });
     }
 
@@ -239,24 +315,22 @@
         var replyInput = replyForm.querySelector('textarea[name="message"]');
         var message = String(replyInput ? replyInput.value : '').trim();
         if (!message) return;
-        if (!Array.isArray(comment.replies)) comment.replies = [];
-        comment.replies.push({ author: '访客', message: message, createdAt: Date.now() });
-        saveComments();
-        renderPanel();
+        setBusy(replyForm, true);
+        apiRequest('', {
+          method: 'POST',
+          headers: { Prefer: 'return=minimal' },
+          body: JSON.stringify({
+            parent_id: comment.id,
+            page_path: pagePath,
+            author: '访客',
+            message: message
+          })
+        }).then(loadComments).catch(function (error) {
+          setBusy(replyForm, false);
+          showServiceError(error);
+        });
       });
 
-      panel.querySelector('[data-resolve]').addEventListener('click', function () {
-        comment.resolved = true;
-        saveComments();
-        closePanel();
-      });
-
-      panel.querySelector('[data-delete]').addEventListener('click', function () {
-        if (!window.confirm('确定删除这条反馈及其全部回复吗？')) return;
-        state.comments = state.comments.filter(function (item) { return item.id !== comment.id; });
-        saveComments();
-        closePanel();
-      });
     }
   }
 
