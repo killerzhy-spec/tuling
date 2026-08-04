@@ -396,7 +396,7 @@
     listToggle.type = 'button';
     listToggle.title = '查看全部反馈';
     listToggle.setAttribute('aria-label', '查看当前页面全部反馈');
-    listToggle.innerHTML = icon('list');
+    listToggle.innerHTML = icon('list') + '<span class="comment-list-dot" aria-hidden="true"></span>';
 
     panel = document.createElement('aside');
     panel.className = 'comment-panel';
@@ -434,6 +434,10 @@
       renderPins();
     });
     window.addEventListener('scroll', syncPinPositions, { passive: true });
+    window.addEventListener('resize', function () {
+      updateBadge();
+      syncPinPositions();
+    });
     window.addEventListener('resize', syncPinPositions);
     document.addEventListener('keydown', function (event) {
       if (event.key === 'Escape') closePanel();
@@ -510,8 +514,50 @@
     var count = state.comments.filter(function (comment) { return !comment.resolved; }).length;
     badge.textContent = count || '';
     badge.hidden = count === 0;
-    if (listToggle) listToggle.classList.toggle('has-comments', count > 0);
-    if (listToggle) listToggle.classList.toggle('active', state.listOpen);
+    if (!listToggle) return;
+
+    var isMobile = window.innerWidth <= 860;
+    listToggle.style.position = 'fixed';
+    listToggle.style.right = isMobile ? '16px' : '24px';
+    listToggle.style.bottom = isMobile ? '76px' : '88px';
+    listToggle.style.zIndex = '1202';
+    listToggle.style.width = '46px';
+    listToggle.style.height = '46px';
+    listToggle.style.borderRadius = '50%';
+    listToggle.style.display = 'flex';
+    listToggle.style.alignItems = 'center';
+    listToggle.style.justifyContent = 'center';
+    listToggle.style.pointerEvents = 'auto';
+    listToggle.style.border = state.listOpen ? '1px solid #0b1f3a' : '1px solid rgba(22, 119, 255, .18)';
+    listToggle.style.background = state.listOpen ? '#0b1f3a' : '#ffffff';
+    listToggle.style.color = state.listOpen ? '#ffffff' : '#1677ff';
+    listToggle.style.boxShadow = '0 10px 26px rgba(7, 29, 66, .16)';
+
+    var listIcon = listToggle.querySelector('svg');
+    if (listIcon) {
+      listIcon.style.width = '19px';
+      listIcon.style.height = '19px';
+      listIcon.style.fill = 'none';
+      listIcon.style.stroke = 'currentColor';
+      listIcon.style.strokeWidth = '1.8';
+      listIcon.style.strokeLinecap = 'round';
+      listIcon.style.strokeLinejoin = 'round';
+    }
+
+    var dot = listToggle.querySelector('.comment-list-dot');
+    if (dot) {
+      dot.style.position = 'absolute';
+      dot.style.top = '8px';
+      dot.style.right = '8px';
+      dot.style.width = '7px';
+      dot.style.height = '7px';
+      dot.style.borderRadius = '50%';
+      dot.style.background = '#f04452';
+      dot.style.display = count > 0 ? 'block' : 'none';
+    }
+
+    listToggle.classList.toggle('has-comments', count > 0);
+    listToggle.classList.toggle('active', state.listOpen);
   }
 
   function renderPanel() {
