@@ -12,7 +12,8 @@
     placing: false,
     activeId: null,
     draft: null,
-    syncing: false
+    syncing: false,
+    supportsAuthorToken: true
   };
 
   var layer;
@@ -60,11 +61,19 @@
     });
   }
 
+  function supportsAuthorTokenError(error) {
+    var text = String(error && error.message || '');
+    return /author_token/i.test(text) && (/42703/.test(text) || /does not exist/i.test(text));
+  }
+
   function loadComments() {
     if (state.syncing) return Promise.resolve();
     state.syncing = true;
+    var fields = state.supportsAuthorToken
+      ? 'id,parent_id,author_token,x,y,author,message,resolved,created_at'
+      : 'id,parent_id,x,y,author,message,resolved,created_at';
     var query = '?page_path=eq.' + encodeURIComponent(pagePath) +
-      '&select=id,parent_id,author_token,x,y,author,message,resolved,created_at&order=created_at.asc';
+      '&select=' + fields + '&order=created_at.asc';
     return apiRequest(query).then(function (rows) {
       var roots = [];
       var rootsById = {};
@@ -84,6 +93,11 @@
       renderPins();
       if (state.activeId) renderPanel();
     }).catch(function (error) {
+      if (state.supportsAuthorToken && supportsAuthorTokenError(error)) {
+        state.supportsAuthorToken = false;
+        state.syncing = false;
+        return loadComments();
+      }
       showServiceError(error);
     }).then(function () {
       state.syncing = false;
@@ -94,7 +108,7 @@
     return {
       id: row.id,
       parentId: row.parent_id,
-      authorToken: row.author_token,
+      authorToken: row.author_token || '',
       x: row.x,
       y: row.y,
       author: row.author,
@@ -279,7 +293,7 @@
   }
 
   function canDelete(comment) {
-    return !!comment && !!comment.authorToken && comment.authorToken === authorToken;
+    return state.supportsAuthorToken && !!comment && !!comment.authorToken && comment.authorToken === authorToken;
   }
 
   function panelHeader(title) {
@@ -308,13 +322,13 @@
         if (!message) return;
         var payload = {
           page_path: pagePath,
-          author_token: authorToken,
           x: state.draft.x,
           y: state.draft.y,
           author: String(data.get('author') || '').trim() || '匿名访客',
           message: message,
           resolved: false
         };
+        if (state.supportsAuthorToken) payload.author_token = authorToken;
         setBusy(createForm, true);
         apiRequest('', {
           method: 'POST',
@@ -339,16 +353,17 @@
         var message = String(replyInput ? replyInput.value : '').trim();
         if (!message) return;
         setBusy(replyForm, true);
+        var replyPayload = {
+          parent_id: comment.id,
+          page_path: pagePath,
+          author: '访客',
+          message: message
+        };
+        if (state.supportsAuthorToken) replyPayload.author_token = authorToken;
         apiRequest('', {
           method: 'POST',
           headers: { Prefer: 'return=minimal' },
-          body: JSON.stringify({
-            parent_id: comment.id,
-            page_path: pagePath,
-            author_token: authorToken,
-            author: '访客',
-            message: message
-          })
+          body: JSON.stringify(replyPayload)
         }).then(loadComments).catch(function (error) {
           setBusy(replyForm, false);
           showServiceError(error);
