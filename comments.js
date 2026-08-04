@@ -6,6 +6,7 @@
   var pathEnd = location.pathname.split('/').filter(Boolean).pop() || '';
   var pagePath = /\.html$/i.test(pathEnd) ? pathEnd : 'index.html';
   var authorTokenKey = 'turing-comment-author-token';
+  var hiddenCommentsKey = 'turing-comment-hidden-comments';
   var legacyAnchorCacheKey = 'turing-comment-legacy-anchor-cache';
   var authorToken = ensureAuthorToken();
   var state = {
@@ -24,6 +25,7 @@
   var listToggle;
   var panel;
   var legacyAnchorCache;
+  var hiddenCommentCache;
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -80,6 +82,40 @@
     } catch (error) {
       // Ignore quota/security errors; runtime anchor still works for this session.
     }
+  }
+
+  function readHiddenComments() {
+    if (hiddenCommentCache) return hiddenCommentCache;
+    try {
+      hiddenCommentCache = JSON.parse(localStorage.getItem(hiddenCommentsKey) || '{}');
+      if (!hiddenCommentCache || typeof hiddenCommentCache !== 'object') hiddenCommentCache = {};
+    } catch (error) {
+      hiddenCommentCache = {};
+    }
+    return hiddenCommentCache;
+  }
+
+  function isCommentHidden(commentId) {
+    var cache = readHiddenComments();
+    var pageHidden = cache[pagePath] || {};
+    return !!pageHidden[String(commentId)];
+  }
+
+  function hideCommentLocally(commentId) {
+    if (!commentId) return;
+    var cache = readHiddenComments();
+    if (!cache[pagePath]) cache[pagePath] = {};
+    cache[pagePath][String(commentId)] = true;
+    hiddenCommentCache = cache;
+    try {
+      localStorage.setItem(hiddenCommentsKey, JSON.stringify(cache));
+    } catch (error) {
+      // Ignore localStorage write failures.
+    }
+
+    state.comments = state.comments.filter(function (item) {
+      return item.id !== commentId;
+    });
   }
 
   function apiRequest(query, options) {
@@ -290,6 +326,7 @@
       var rootsById = {};
       rows.forEach(function (row) {
         if (row.parent_id) return;
+        if (isCommentHidden(row.id)) return;
         var comment = mapRow(row);
         inferLegacyAnchor(comment);
         comment.replies = [];
@@ -297,6 +334,7 @@
         rootsById[comment.id] = comment;
       });
       rows.forEach(function (row) {
+        if (isCommentHidden(row.id)) return;
         if (row.parent_id && rootsById[row.parent_id]) {
           rootsById[row.parent_id].replies.push(mapRow(row));
         }
@@ -727,14 +765,10 @@
       var deleteBtn = panel.querySelector('[data-delete]');
       if (deleteBtn) {
         deleteBtn.addEventListener('click', function () {
-          if (!window.confirm('确定删除这条反馈及其全部回复吗？')) return;
-          apiRequest('?id=eq.' + encodeURIComponent(comment.id), {
-            method: 'DELETE',
-            headers: { Prefer: 'return=minimal' }
-          }).then(function () {
-            closePanel();
-            loadComments();
-          }).catch(showServiceError);
+          if (!window.confirm('确定隐藏这条反馈吗？（仅在当前浏览器生效）')) return;
+          hideCommentLocally(comment.id);
+          closePanel();
+          renderPins();
         });
       }
 
