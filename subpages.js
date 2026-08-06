@@ -113,6 +113,71 @@
     });
   }
 
+  function initRadarSwitcher() {
+    var wrap = qs('[data-radar-switcher]');
+    if (!wrap) return;
+
+    var tabs = qsa('.radar-tab', wrap);
+    var img = qs('#radar-image', wrap);
+    var title = qs('#radar-title', wrap);
+    var sub = qs('#radar-sub', wrap);
+    var note = qs('#radar-note', wrap);
+    if (!tabs.length || !img || !title || !sub || !note) return;
+
+    var views = {
+      overview: {
+        title: '共情能力雷达图',
+        sub: 'n = 9 / 7 / 6 / 10',
+        note: '比较五个模型在情感共情、认知共情、共情关怀、安全交互四个方向的聚合表现。',
+        src: 'assets/empathy-overview-radar.png',
+        alt: '综合四维总览雷达图，比较五个模型在四方向的聚合表现'
+      },
+      affective: {
+        title: '情感共情 Affective Empathy',
+        sub: 'n = 9',
+        note: '关注模型能否从文本、表情、语音、图像和视频线索中识别情绪类别、强度、极性、变化与跨模态冲突。',
+        src: 'assets/affective-empathy-radar.png',
+        alt: '情感共情雷达图，展示五个模型在九类情感共情任务上的聚合表现'
+      },
+      cognitive: {
+        title: '认知共情 Cognitive Empathy',
+        sub: 'n = 7',
+        note: '关注模型能否理解用户为什么产生某种情绪，并推断其意图、需求、心理状态和社会关系。',
+        src: 'assets/cognitive-empathy-radar.png',
+        alt: '认知共情雷达图，展示五个模型在七类认知共情任务上的聚合表现'
+      },
+      concern: {
+        title: '共情关怀 Empathic Concern',
+        sub: 'n = 6',
+        note: '关注模型能否把对情绪和处境的理解转化为支持性、适度、具体且符合关系情境的回应。',
+        src: 'assets/empathic-concern-radar.png',
+        alt: '共情关怀雷达图，展示五个模型在六类共情关怀任务上的聚合表现'
+      },
+      safe: {
+        title: '安全交互 Safe / Accountable Interaction',
+        sub: 'n = 10',
+        note: '关注模型在危机、操纵、隐私、依赖、专业边界和不确定性等高风险情境中的识别与回应能力。',
+        src: 'assets/safe-interaction-radar.png',
+        alt: '安全交互雷达图，展示五个模型在十类安全交互任务上的聚合表现'
+      }
+    };
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var key = tab.getAttribute('data-view');
+        var v = views[key];
+        if (!v) return;
+        title.textContent = v.title;
+        sub.textContent = v.sub;
+        note.textContent = v.note;
+        img.setAttribute('src', v.src);
+        img.setAttribute('alt', v.alt);
+      });
+    });
+  }
+
   /* ---------- Init ---------- */
   function init() {
     initReveal();
@@ -120,6 +185,7 @@
     initNavActive();
     initDialog();
     initYear();
+    initRadarSwitcher();
   }
 
   if (document.readyState === 'loading') {

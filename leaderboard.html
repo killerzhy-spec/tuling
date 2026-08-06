@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>模型榜单 — 图灵 2.0</title>
-  <meta name="description" content="覆盖 MER/ABAW/MuSe 多任务，支持按赛道筛选，持续社区提交。" />
+  <meta name="description" content="图灵 2.0 五维结果查看：综合、情感共情、认知共情、共情关怀、安全交互。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
@@ -87,17 +87,17 @@
         <span class="section-label">LEADERBOARD</span>
         <h1 class="section-title" style="margin-top:14px;">模型榜单</h1>
         <p class="section-desc" style="margin-top:18px;">
-          覆盖 MER / ABAW / MuSe 多任务 · 支持按赛道筛选 · 持续社区提交。
+          结果为特定模型版本、输入模态和评测规则下的研究性聚合展示，不构成官方总排名或安全认证。
         </p>
       </div>
       <div class="subpage-hero-right">
         <div>
-          <div class="stat-big">10</div>
+          <div class="stat-big">5</div>
           <div class="stat-sub">参评模型</div>
         </div>
         <div>
-          <div class="stat-big">6</div>
-          <div class="stat-sub">评测赛道</div>
+          <div class="stat-big">5</div>
+          <div class="stat-sub">结果视图</div>
         </div>
       </div>
     </div>
@@ -107,16 +107,14 @@
   <section class="leaderboard-section section-space-sm" style="padding-top:24px;">
     <div class="section-shell">
 
-      <div class="lb-version" id="lb-count">综合榜单 · 全部赛道 · 10 个模型</div>
+      <div class="lb-version" id="lb-count">综合视图 · 5 个模型</div>
 
       <div class="lb-tabs">
-        <button class="lb-tab active" data-track="all">全部赛道</button>
-        <button class="lb-tab" data-track="MER-FG">MER-FG</button>
-        <button class="lb-tab" data-track="MER-SEMI">MER-SEMI</button>
-        <button class="lb-tab" data-track="ABAW Multi-Task">ABAW Multi-Task</button>
-        <button class="lb-tab" data-track="MER-PS">MER-PS</button>
-        <button class="lb-tab" data-track="MER-DES">MER-DES</button>
-        <button class="lb-tab" data-track="MuSe Wild">MuSe Wild</button>
+        <button class="lb-tab active" data-view="overall">综合</button>
+        <button class="lb-tab" data-view="affective">情感共情</button>
+        <button class="lb-tab" data-view="cognitive">认知共情</button>
+        <button class="lb-tab" data-view="concern">共情关怀</button>
+        <button class="lb-tab" data-view="safe">安全交互</button>
       </div>
 
       <div class="lb-table-wrap reveal">
@@ -125,125 +123,20 @@
             <tr>
               <th>排名</th>
               <th>模型</th>
-              <th>综合得分</th>
-              <th>共情 / VA</th>
-              <th>细粒度 F1 / WAF</th>
-              <th>多轮 / 生理</th>
-              <th>赛道</th>
-              <th>更新日期</th>
+              <th id="lb-current-head">综合评分</th>
+              <th>情感共情</th>
+              <th>认知共情</th>
+              <th>共情关怀</th>
+              <th>安全交互</th>
             </tr>
           </thead>
-          <tbody>
-            <tr data-track="MER-FG">
-              <td class="lb-rank lb-rank-1">1</td>
-              <td><div class="lb-model">Claude 3.5 Sonnet</div><div class="lb-vendor">Anthropic</div></td>
-              <td><span class="lb-score">89.4</span><div class="lb-progress"><div class="lb-progress-fill" data-w="89.4"></div></div></td>
-              <td class="lb-sub">91.2</td><td class="lb-sub">87.5</td><td class="lb-sub">88.9</td>
-              <td><span class="lb-track-tag">MER-FG</span></td><td class="lb-date">2026-05-01</td>
-            </tr>
-            <tr data-track="MER-SEMI">
-              <td class="lb-rank lb-rank-2">2</td>
-              <td><div class="lb-model">GPT-4o</div><div class="lb-vendor">OpenAI</div></td>
-              <td><span class="lb-score">88.7</span><div class="lb-progress"><div class="lb-progress-fill" data-w="88.7"></div></div></td>
-              <td class="lb-sub">87.8</td><td class="lb-sub">92.1</td><td class="lb-sub">85.4</td>
-              <td><span class="lb-track-tag">MER-SEMI</span></td><td class="lb-date">2026-04-28</td>
-            </tr>
-            <tr data-track="MER-FG">
-              <td class="lb-rank lb-rank-3">3</td>
-              <td><div class="lb-model">Qwen2.5-VL-72B</div><div class="lb-vendor">Alibaba</div></td>
-              <td><span class="lb-score">86.9</span><div class="lb-progress"><div class="lb-progress-fill" data-w="86.9"></div></div></td>
-              <td class="lb-sub">85.3</td><td class="lb-sub">89.7</td><td class="lb-sub">84.2</td>
-              <td><span class="lb-track-tag">MER-FG</span></td><td class="lb-date">2026-05-03</td>
-            </tr>
-            <tr data-track="ABAW Multi-Task">
-              <td class="lb-rank">4</td>
-              <td><div class="lb-model">Gemini 2.0 Pro</div><div class="lb-vendor">Google</div></td>
-              <td><span class="lb-score">85.8</span><div class="lb-progress"><div class="lb-progress-fill" data-w="85.8"></div></div></td>
-              <td class="lb-sub">84.1</td><td class="lb-sub">88.3</td><td class="lb-sub">86.7</td>
-              <td><span class="lb-track-tag">ABAW Multi-Task</span></td><td class="lb-date">2026-04-20</td>
-            </tr>
-            <tr data-track="MER-SEMI">
-              <td class="lb-rank">5</td>
-              <td><div class="lb-model">Qwen2.5-72B-Instruct</div><div class="lb-vendor">Alibaba</div></td>
-              <td><span class="lb-score">84.5</span><div class="lb-progress"><div class="lb-progress-fill" data-w="84.5"></div></div></td>
-              <td class="lb-sub">82.3</td><td class="lb-sub">81.9</td><td class="lb-sub">79.8</td>
-              <td><span class="lb-track-tag">MER-SEMI</span></td><td class="lb-date">2026-05-02</td>
-            </tr>
-            <tr data-track="MER-FG">
-              <td class="lb-rank">6</td>
-              <td><div class="lb-model">InternVL2-76B</div><div class="lb-vendor">Shanghai AI Lab</div></td>
-              <td><span class="lb-score">83.9</span><div class="lb-progress"><div class="lb-progress-fill" data-w="83.9"></div></div></td>
-              <td class="lb-sub">79.6</td><td class="lb-sub">85.2</td><td class="lb-sub">81.4</td>
-              <td><span class="lb-track-tag">MER-FG</span></td><td class="lb-date">2026-04-25</td>
-            </tr>
-            <tr data-track="MER-SEMI">
-              <td class="lb-rank">7</td>
-              <td><div class="lb-model">Llama 3.1 405B</div><div class="lb-vendor">Meta</div></td>
-              <td><span class="lb-score">83.2</span><div class="lb-progress"><div class="lb-progress-fill" data-w="83.2"></div></div></td>
-              <td class="lb-sub">81.5</td><td class="lb-sub">72.4</td><td class="lb-sub">82.9</td>
-              <td><span class="lb-track-tag">MER-SEMI</span></td><td class="lb-date">2026-03-15</td>
-            </tr>
-            <tr data-track="MER-PS">
-              <td class="lb-rank">8</td>
-              <td><div class="lb-model">DeepSeek-R1</div><div class="lb-vendor">DeepSeek</div></td>
-              <td><span class="lb-score">82.6</span><div class="lb-progress"><div class="lb-progress-fill" data-w="82.6"></div></div></td>
-              <td class="lb-sub">80.9</td><td class="lb-sub">68.7</td><td class="lb-sub">84.1</td>
-              <td><span class="lb-track-tag">MER-PS</span></td><td class="lb-date">2026-05-05</td>
-            </tr>
-            <tr data-track="MER-DES">
-              <td class="lb-rank">9</td>
-              <td><div class="lb-model">Turing-Emo-v0.8</div><div class="lb-vendor">Weizhi Lab</div></td>
-              <td><span class="lb-score">81.4</span><div class="lb-progress"><div class="lb-progress-fill" data-w="81.4"></div></div></td>
-              <td class="lb-sub">88.7</td><td class="lb-sub">79.2</td><td class="lb-sub">83.5</td>
-              <td><span class="lb-track-tag">MER-DES</span></td><td class="lb-date">2026-05-08</td>
-            </tr>
-            <tr data-track="MuSe Wild">
-              <td class="lb-rank">10</td>
-              <td><div class="lb-model">Mistral Large 2</div><div class="lb-vendor">Mistral AI</div></td>
-              <td><span class="lb-score">79.8</span><div class="lb-progress"><div class="lb-progress-fill" data-w="79.8"></div></div></td>
-              <td class="lb-sub">78.2</td><td class="lb-sub">65.4</td><td class="lb-sub">80.1</td>
-              <td><span class="lb-track-tag">MuSe Wild</span></td><td class="lb-date">2026-04-10</td>
-            </tr>
-          </tbody>
+          <tbody id="lb-body"></tbody>
         </table>
       </div>
 
       <p class="lb-demo-note">
-        数据来源于 MER / ABAW / MuSe 公开榜单与社区提交；示例模型分数仅作页面演示，正式结果请以原始榜单和提交记录为准。
+        结果为特定模型版本、输入模态和评测规则下的研究性聚合展示；不构成官方总排名、安全认证、采购建议或高风险部署保证。
       </p>
-
-      <!-- ============ 赛道说明 ============ -->
-      <div class="section-header" style="margin:56px 0 8px;">
-        <span class="section-label">TRACKS</span>
-        <h2 class="section-title" style="font-size:clamp(24px,3vw,34px);">评测赛道说明</h2>
-      </div>
-
-      <div class="track-grid">
-        <div class="track-card reveal">
-          <div class="track-card-name">MER-FG</div>
-          <div class="track-card-models">Claude 3.5 Sonnet · Qwen2.5-VL-72B · InternVL2-76B</div>
-        </div>
-        <div class="track-card reveal">
-          <div class="track-card-name">MER-SEMI</div>
-          <div class="track-card-models">GPT-4o · Qwen2.5-72B-Instruct · Llama 3.1 405B</div>
-        </div>
-        <div class="track-card reveal">
-          <div class="track-card-name">ABAW Multi-Task</div>
-          <div class="track-card-models">Gemini 2.0 Pro</div>
-        </div>
-        <div class="track-card reveal">
-          <div class="track-card-name">MER-PS</div>
-          <div class="track-card-models">DeepSeek-R1</div>
-        </div>
-        <div class="track-card reveal">
-          <div class="track-card-name">MER-DES</div>
-          <div class="track-card-models">Turing-Emo-v0.8</div>
-        </div>
-        <div class="track-card reveal">
-          <div class="track-card-name">MuSe Wild</div>
-          <div class="track-card-models">Mistral Large 2</div>
-        </div>
-      </div>
 
       <div class="chip-row reveal" style="margin-top:40px;">
         <a class="btn btn-primary" href="https://github.com/weizhi002/turing-2.0/issues/new?labels=evaluation" target="_blank" rel="noopener">提交新评测结果 ↗</a>
@@ -282,7 +175,7 @@
               <small>EMOTIONAL INTELLIGENCE AI</small>
             </span>
           </a>
-          <p>大模型情感智能开放测评平台——从情绪感知、情感理解，到共情回应与风险识别。</p>
+          <p>大模型共情智能开放测评平台——聚焦情感共情、认知共情、共情关怀与安全交互。</p>
           <p class="footer-tagline">开放 · 透明 · 可复现</p>
         </div>
 
@@ -297,17 +190,17 @@
 
         <div class="footer-col">
           <h4>能力领域</h4>
-          <a href="framework.html">情绪感知</a>
-          <a href="framework.html">情感理解</a>
-          <a href="framework.html">共情回应</a>
-          <a href="framework.html">安全与伦理</a>
+          <a href="framework.html">情感共情</a>
+          <a href="framework.html">认知共情</a>
+          <a href="framework.html">共情关怀</a>
+          <a href="framework.html">安全交互</a>
         </div>
 
         <div class="footer-col">
           <h4>联系与提交</h4>
           <a href="https://github.com/weizhi002/turing-2.0/issues/new?labels=evaluation" target="_blank" rel="noopener">GitHub 讨论 ↗</a>
           <span class="footer-static">benchmark@example.com</span>
-          <span class="footer-static">Demo 演示用途 · 数据持续复核</span>
+          <span class="footer-static">研究性展示 · 数据持续复核</span>
         </div>
       </div>
 
@@ -331,7 +224,7 @@
         </div>
         <div class="dialog-step">
           <span class="dialog-step-num">2</span>
-          <p><b>评测维度</b><span>明确提交 P / U / E / R / G / S / A 中哪些维度，以及对应任务集</span></p>
+          <p><b>评测维度</b><span>明确提交方向、任务、数据子集与输入模态</span></p>
         </div>
         <div class="dialog-step">
           <span class="dialog-step-num">3</span>
@@ -350,6 +243,8 @@
 
   <script src="subpages.js"></script>
   <script src="leaderboard.js"></script>
+  <link rel="stylesheet" href="feedback-module/feedback-module.css" />
+  <script src="feedback-module/feedback-module.js"></script>
   <script src="comments.js"></script>
 </body>
 </html>

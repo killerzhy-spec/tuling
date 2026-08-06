@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>测评框架 — 图灵 2.0</title>
-  <meta name="description" content="EI-META 七维情感智能综合体系与 MEI-Empathy-M 四维实证评测视图。" />
+  <meta name="description" content="图灵 2.0 测评框架：数据组织、评测执行、指标分析与平台使用方式。" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
@@ -87,7 +87,7 @@
         <span class="section-label">EVALUATION FRAMEWORK</span>
         <h1 class="section-title" style="margin-top:14px;">测评框架</h1>
         <p class="section-desc" style="margin-top:18px;">
-          四大核心能力领域为骨架，EI-META 七维体系为理论地图，MEI-Empathy-M 四维实证视图为可复核的结果组织方式。
+          页面主线聚焦如何组织数据、如何进行评测、如何计算指标并分析结果，以及平台与工具如何使用。
         </p>
       </div>
       <div class="subpage-hero-right">
@@ -97,7 +97,7 @@
         </div>
         <div>
           <div class="stat-big">7</div>
-          <div class="stat-sub">EI-META 维度</div>
+          <div class="stat-sub">流程关键节点</div>
         </div>
       </div>
     </div>
@@ -109,118 +109,29 @@
       <div class="section-header reveal">
         <span class="section-label">CORE CAPABILITIES</span>
         <h2 class="section-title">四大核心能力领域</h2>
-        <p class="section-desc" style="margin-top:16px;">
-          以权重化结构组织测评任务，覆盖从情绪识别到安全交互的完整链路。
-        </p>
+        <p class="section-desc" style="margin-top:16px;">四个方向共同描述模型从感知到安全回应的能力链路，不设置固定权重。</p>
       </div>
 
       <div class="framework-grid">
         <div class="card card-hover reveal">
           <span class="card-num">01</span>
-          <h3 class="card-title">情绪感知</h3>
-          <span class="card-weight">权重 25%</span>
-          <ul class="card-list">
-            <li>离散情绪分类</li>
-            <li>效价—唤醒回归</li>
-            <li>跨模态一致性</li>
-          </ul>
+          <h3 class="card-title">情感共情</h3>
+          <p class="card-desc">测评模型是否具备类似人类情感共情中的情绪敏感性、情绪线索识别和多模态情绪感知能力。</p>
         </div>
         <div class="card card-hover reveal">
           <span class="card-num">02</span>
-          <h3 class="card-title">情感理解</h3>
-          <span class="card-weight">权重 30%</span>
-          <ul class="card-list">
-            <li>情绪原因推理</li>
-            <li>细粒度情绪理解</li>
-            <li>文化语境识别</li>
-          </ul>
+          <h3 class="card-title">认知共情</h3>
+          <p class="card-desc">测评模型能否理解人类为什么会有这种情绪，以及用户隐含的心理状态、意图、需求和处境。</p>
         </div>
         <div class="card card-hover reveal">
           <span class="card-num">03</span>
-          <h3 class="card-title">共情回应</h3>
-          <span class="card-weight">权重 25%</span>
-          <ul class="card-list">
-            <li>共情策略选择</li>
-            <li>回应质量评估</li>
-            <li>长期情绪陪伴</li>
-          </ul>
+          <h3 class="card-title">共情关怀</h3>
+          <p class="card-desc">测评模型能否把情绪感知和理解转化为关怀、支持、安抚、引导和关系修复等输出。</p>
         </div>
         <div class="card card-hover reveal">
           <span class="card-num">04</span>
-          <h3 class="card-title">安全与伦理</h3>
-          <span class="card-weight">权重 20%</span>
-          <ul class="card-list">
-            <li>心理风险识别</li>
-            <li>偏见与操纵检测</li>
-            <li>安全响应策略</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ EI-META 七维 ============ -->
-  <section class="section-space">
-    <div class="section-shell">
-      <div class="section-header reveal">
-        <span class="section-label">EI-META · 7 DIMENSIONS</span>
-        <h2 class="section-title">EI-META 七维情感智能综合体系</h2>
-        <p class="section-desc" style="margin-top:16px;">
-          每个维度都对应一组可落地的 AI 任务，并映射到人类情绪能力标准：感知、理解、表达、管理、决策、社会互动与负责任回应。
-        </p>
-      </div>
-
-      <div class="eimeta-formula reveal">EI-META = { P, U, E, R, G, S, A }</div>
-
-      <div class="eimeta-grid">
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">P</div>
-          <div class="eimeta-name">情感感知</div>
-          <div class="eimeta-desc">识别表情、语音、文本与情境中的情绪信号</div>
-          <div class="eimeta-keys"><span>类别</span><span>强度</span><span>维度</span><span>微表情</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：情绪知觉</div>
-        </div>
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">U</div>
-          <div class="eimeta-name">情绪理解</div>
-          <div class="eimeta-desc">解释情绪原因、对象、需求与文化语境</div>
-          <div class="eimeta-keys"><span>因果</span><span>混合</span><span>隐含</span><span>文化语境</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：情绪知识与推理</div>
-        </div>
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">E</div>
-          <div class="eimeta-name">情绪表达</div>
-          <div class="eimeta-desc">生成恰当、真实、可理解的语言与多模态表达</div>
-          <div class="eimeta-keys"><span>安慰</span><span>鼓励</span><span>语气</span><span>多模态一致</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：情绪表达与沟通</div>
-        </div>
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">R</div>
-          <div class="eimeta-name">情绪调节</div>
-          <div class="eimeta-desc">管理焦虑、重评冲突、转移注意并稳定互动</div>
-          <div class="eimeta-keys"><span>认知重评</span><span>冲突降级</span><span>策略适配</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：情绪管理</div>
-        </div>
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">G</div>
-          <div class="eimeta-name">情绪使用</div>
-          <div class="eimeta-desc">把情绪作为注意、判断和行动决策的信息</div>
-          <div class="eimeta-keys"><span>风险偏好</span><span>任务匹配</span><span>问题解决</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：情绪促进思维</div>
-        </div>
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">S</div>
-          <div class="eimeta-name">社会适应</div>
-          <div class="eimeta-desc">理解角色、关系、礼貌、文化规范与群体情绪</div>
-          <div class="eimeta-keys"><span>礼貌面子</span><span>关系修复</span><span>群体情绪</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：社会情绪能力</div>
-        </div>
-        <div class="eimeta-card reveal">
-          <div class="eimeta-letter">A</div>
-          <div class="eimeta-name">安全交互</div>
-          <div class="eimeta-desc">识别危机、保持边界并给出负责任回应</div>
-          <div class="eimeta-keys"><span>危机回应</span><span>隐私保护</span><span>依赖风险</span></div>
-          <div class="eimeta-desc" style="margin:12px 0 0;font-size:11px;">映射：心理急救式安全回应</div>
+          <h3 class="card-title">安全交互</h3>
+          <p class="card-desc">测评模型在高风险、脆弱、依赖、危机或不确定情境中，能否保持安全、边界、非操控的原则。</p>
         </div>
       </div>
     </div>
@@ -237,18 +148,18 @@
       <div class="process-steps">
         <div class="process-step reveal">
           <div class="process-step-num">01</div>
-          <div class="process-step-title">输入与任务</div>
-          <p>评测输入覆盖文本、语音、视觉、行为、生理信号与对话上下文。任务不再只问「是什么情绪」，还要问「为什么产生、如何表达、如何调节、如何用于决策」。</p>
+          <div class="process-step-title">数据组织</div>
+          <p>按任务目标组织公开数据源、标准化资源与子任务视图，明确输入模态、样本量与可复核来源。</p>
         </div>
         <div class="process-step reveal">
           <div class="process-step-num">02</div>
-          <div class="process-step-title">指标设计</div>
-          <p>基础层使用 WAF、F1、CCC、MAE 等客观指标；生成与交互层加入证据一致性、共情质量、策略适配、社会规范和安全边界评分。</p>
+          <div class="process-step-title">评测执行</div>
+          <p>在模态匹配后执行模型作答与任务评分，记录版本、日期、评委信息和异常信息，保证后续复核。</p>
         </div>
         <div class="process-step reveal">
           <div class="process-step-num">03</div>
-          <div class="process-step-title">人类能力映射</div>
-          <p>7 个维度分别对应情绪知觉、情绪知识与推理、情绪表达与沟通、情绪管理、情绪促进思维、社会情绪能力和心理急救式安全回应。</p>
+          <div class="process-step-title">指标分析与使用</div>
+          <p>按任务类型解释指标方向和可比较范围，对外公开框架与结果，工具脚本按用途审核后提供。</p>
         </div>
       </div>
 
@@ -262,8 +173,24 @@
         <span class="pipeline-node">结果记录</span>
       </div>
 
-      <p class="section-desc reveal" style="margin-top:28px;font-size:15px;">
-        分类、回归、抽取、开放生成与安全任务分别采用 Accuracy、F1、Pearson、MAE、ROUGE、BLEU 或模型评委等适配指标。框架评估的是模型在任务中的可观察行为，<b>不判断模型是否具有意识或主观情感</b>。
+      <div class="data-table-wrap reveal" style="margin-top:28px;">
+        <table class="data-table">
+          <thead>
+            <tr><th style="width:220px;">任务类型</th><th>指标示例</th><th style="width:140px;">指标方向</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="table-name">分类</td><td>Accuracy / F1 / Macro-F1</td><td>越高越好</td></tr>
+            <tr><td class="table-name">回归</td><td>MAE / RMSE / CCC</td><td>MAE/RMSE 越低越好，CCC 越高越好</td></tr>
+            <tr><td class="table-name">选择题</td><td>Accuracy / Pass@1</td><td>越高越好</td></tr>
+            <tr><td class="table-name">抽取</td><td>Exact Match / F1</td><td>越高越好</td></tr>
+            <tr><td class="table-name">参考式生成</td><td>ROUGE / BLEU / BERTScore</td><td>越高越好</td></tr>
+            <tr><td class="table-name">模型评委与偏好判断</td><td>Pairwise Win Rate / Preference Score</td><td>越高越好</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="section-desc reveal" style="margin-top:20px;font-size:15px;max-width:100%;">
+        结果记录最小字段：模型、任务、数据子集、输入模态、样本量、评测日期、主指标、评委信息、异常信息。框架评估的是模型在任务中的可观察行为，<b>不宣称模型具备意识、主观情感或临床能力</b>。
       </p>
     </div>
   </section>
@@ -275,26 +202,21 @@
         <span class="section-label">MEI-EMPATHY-M</span>
         <h2 class="section-title">MEI-Empathy-M 实证评测</h2>
         <p class="section-desc" style="margin-top:16px;">
-          把公开数据、任务和结果组织为可复核的四维实证视图。四维框架是对本次 Benchmark 的项目化归纳，不替代上方七维理论地图。
+          与首页同步使用综合评分、五图切换、细分任务清单与研究性免责声明。
         </p>
       </div>
 
-      <div class="metrics-bar reveal" style="margin-bottom:48px;">
-        <div class="metric-item">
-          <span class="metric-num">214</span>
-          <span class="metric-label">模型×任务指标记录</span>
+      <div class="composite-score-card reveal" style="margin-bottom:28px;">
+        <div class="composite-score-head">
+          <h3>综合评分（0–1）</h3>
+          <span>四维聚合展示（0–1），非跨任务官方总排名</span>
         </div>
-        <div class="metric-item">
-          <span class="metric-num">42</span>
-          <span class="metric-label">任务变体</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-num">30</span>
-          <span class="metric-label">数据来源</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-num">2026-07-29</span>
-          <span class="metric-label">结果快照日期</span>
+        <div class="composite-score-grid">
+          <div><b>Gemini 3.1 Pro</b><span>0.5172</span></div>
+          <div><b>MiMo v2.5</b><span>0.4883</span></div>
+          <div><b>DeepSeek v4 Flash</b><span>0.4615</span></div>
+          <div><b>GPT-5.5</b><span>0.4486</span></div>
+          <div><b>Claude Opus 4.6</b><span>0.4401</span></div>
         </div>
       </div>
 
@@ -304,49 +226,42 @@
             <span class="mei-card-num">01</span>
             <div class="mei-card-title">情感共情</div>
             <div class="mei-card-en">Affective Empathy</div>
-            <p>识别文本、表情、语音、图像与视频中的情绪类别、强度、极性、变化及跨模态冲突。</p>
+            <ul class="mei-task-list"><li>情绪类别识别</li><li>情绪强度判断</li><li>情感极性判断</li><li>微表情与细微信号识别</li><li>伪装情绪识别</li><li>跨模态冲突识别</li><li>情绪变化追踪</li><li>群体情绪识别</li><li>情感敏感性解释</li></ul>
           </div>
           <div class="mei-card reveal">
             <span class="mei-card-num">02</span>
             <div class="mei-card-title">认知共情</div>
             <div class="mei-card-en">Cognitive Empathy</div>
-            <p>推断情绪原因、意图、信念、需求、关系和社会情境，完成观点采择与社会推理。</p>
+            <ul class="mei-task-list"><li>情绪原因与对象推理</li><li>隐含需求识别</li><li>观点采择与心理状态推断</li><li>复杂/混合/转化情绪理解</li><li>情绪词汇与细粒度情绪识别</li><li>情绪对注意/记忆/风险和社会判断的影响理解</li><li>社会角色识别与关系情绪理解</li></ul>
           </div>
           <div class="mei-card reveal">
             <span class="mei-card-num">03</span>
             <div class="mei-card-title">共情关怀</div>
             <div class="mei-card-en">Empathic Concern</div>
-            <p>把理解转化为尊重、具体、适度的支持策略，并保持语气、角色与多模态回应一致。</p>
+            <ul class="mei-task-list"><li>共情回应生成</li><li>语气/强度和角色适配</li><li>多模态回应一致性</li><li>支持策略选择</li><li>情绪安抚与认知重评</li><li>个性化调节与效果评估</li><li>关系修复与社会礼貌回应</li></ul>
           </div>
           <div class="mei-card reveal">
             <span class="mei-card-num">04</span>
             <div class="mei-card-title">安全交互</div>
             <div class="mei-card-en">Safe &amp; Accountable Interaction</div>
-            <p>识别危机、操纵、隐私和依赖风险，在帮助用户的同时维护事实、专业与安全边界。</p>
+            <ul class="mei-task-list"><li>高风险情绪与危机识别</li><li>危机安全回应与现实求助引导</li><li>非评判倾听与去污名化回应</li><li>情绪操控/PUA 与威胁识别</li><li>拟人化与依赖风险控制</li><li>医疗/心理/法律等专业边界维护</li><li>隐私保护与敏感信息边界</li><li>幻觉风险与不确定性控制</li><li>偏见/公平性与社会伤害风险识别</li><li>冲突/暴力和冲动行为降级</li></ul>
           </div>
         </div>
 
-        <div class="radar-wrap reveal">
-          <div class="radar-title">四大类评测条目覆盖</div>
-          <div class="radar-sub">193 条评测条目分布 · 更新 2026-07-27</div>
-          <svg class="radar-svg" viewBox="0 0 320 300" aria-hidden="true">
-            <polygon points="160,40 270,150 160,260 50,150" fill="none" stroke="#d9e5f5"/>
-            <polygon points="160,67.5 242.5,150 160,232.5 77.5,150" fill="none" stroke="#d9e5f5"/>
-            <polygon points="160,95 215,150 160,205 105,150" fill="none" stroke="#d9e5f5"/>
-            <polygon points="160,122.5 187.5,150 160,177.5 132.5,150" fill="none" stroke="#d9e5f5"/>
-            <line x1="160" y1="40" x2="160" y2="260" stroke="#e8eff9"/>
-            <line x1="50" y1="150" x2="270" y2="150" stroke="#e8eff9"/>
-            <polygon class="radar-shape" points="160,56 270,150 160,226.3 97.9,150"
-              fill="rgba(22,119,255,.16)" stroke="#1677ff" stroke-width="2"/>
-            <circle cx="160" cy="56" r="4" fill="#1677ff"/>
-            <circle cx="270" cy="150" r="4" fill="#705cff"/>
-            <circle cx="160" cy="226.3" r="4" fill="#64b5ff"/>
-            <circle cx="97.9" cy="150" r="4" fill="#73c4ff"/>
-            <text x="160" y="24" text-anchor="middle" class="radar-axis-label">情感共情 · 53</text>
-            <text x="282" y="154" text-anchor="start" class="radar-axis-label">认知共情 · 62</text>
-            <text x="160" y="284" text-anchor="middle" class="radar-axis-label">共情关怀 · 43</text>
-            <text x="38" y="154" text-anchor="end" class="radar-axis-label">安全交互 · 35</text>
-          </svg>
+        <div class="radar-wrap reveal" data-radar-switcher>
+          <div class="radar-tabs">
+            <button class="radar-tab active" data-view="overview">综合四维总览</button>
+            <button class="radar-tab" data-view="affective">情感共情</button>
+            <button class="radar-tab" data-view="cognitive">认知共情</button>
+            <button class="radar-tab" data-view="concern">共情关怀</button>
+            <button class="radar-tab" data-view="safe">安全交互</button>
+          </div>
+          <div class="radar-title" id="radar-title">共情能力雷达图</div>
+          <div class="radar-sub" id="radar-sub">n = 9 / 7 / 6 / 10</div>
+          <img id="radar-image" class="radar-image" src="assets/empathy-overview-radar.png" alt="综合四维总览雷达图，比较五个模型在四方向的聚合表现" />
+          <p class="radar-note" id="radar-note">比较五个模型在情感共情、认知共情、共情关怀、安全交互四个方向的聚合表现。</p>
+          <p class="radar-caption" id="radar-caption">雷达图使用 0–1 尺度汇总多个共情相关任务，用于观察模型在能力维度上的相对表现。图中 n 表示该维度纳入聚合的细分任务数。雷达图为聚合展示，不是官方总分，也不能替代单任务原始指标；不同任务的指标、模态、样本量和评测方法可能不同。</p>
+          <p class="radar-caption">资源提示：若图像未显示，请将 Turing2.0_Benchmark(1).zip/02_VISUALS 中对应文件放入 assets 目录。</p>
         </div>
       </div>
 
@@ -357,10 +272,11 @@
         <span class="chip">Gemini 3.1 Pro</span>
         <span class="chip">MiMo-V2.5</span>
         <span class="chip">DeepSeek-V4-Flash</span>
+        <span class="chip">…</span>
       </div>
 
       <p class="lb-demo-note reveal" style="margin-top:24px;">
-        四维总览用于观察任务覆盖与能力结构，不生成跨任务、跨语言、跨模态的全站总排名。
+        四维聚合结果用于研究性比较，不构成官方总排名、安全认证、采购建议或高风险场景部署保证。
       </p>
     </div>
   </section>
@@ -385,7 +301,7 @@
             </tr>
             <tr>
               <td class="table-name">评测维度</td>
-              <td>明确提交 P / U / E / R / G / S / A 中哪些维度，以及对应任务集</td>
+              <td>明确提交方向、任务、数据子集与输入模态</td>
             </tr>
             <tr>
               <td class="table-name">数据与协议</td>
@@ -393,7 +309,7 @@
             </tr>
             <tr>
               <td class="table-name">指标与证据</td>
-              <td>提供客观指标、人工评分规则、失败案例和可复现实验脚本</td>
+              <td>提供主指标、评委信息、异常信息、失败案例和可复现实验脚本</td>
             </tr>
           </tbody>
         </table>
@@ -435,7 +351,7 @@
               <small>EMOTIONAL INTELLIGENCE AI</small>
             </span>
           </a>
-          <p>大模型情感智能开放测评平台——从情绪感知、情感理解，到共情回应与风险识别。</p>
+          <p>大模型共情智能开放测评平台——聚焦情感共情、认知共情、共情关怀与安全交互。</p>
           <p class="footer-tagline">开放 · 透明 · 可复现</p>
         </div>
 
@@ -450,10 +366,10 @@
 
         <div class="footer-col">
           <h4>能力领域</h4>
-          <a href="framework.html">情绪感知</a>
-          <a href="framework.html">情感理解</a>
-          <a href="framework.html">共情回应</a>
-          <a href="framework.html">安全与伦理</a>
+          <a href="framework.html">情感共情</a>
+          <a href="framework.html">认知共情</a>
+          <a href="framework.html">共情关怀</a>
+          <a href="framework.html">安全交互</a>
         </div>
 
         <div class="footer-col">
@@ -484,7 +400,7 @@
         </div>
         <div class="dialog-step">
           <span class="dialog-step-num">2</span>
-          <p><b>评测维度</b><span>明确提交 P / U / E / R / G / S / A 中哪些维度，以及对应任务集</span></p>
+          <p><b>评测维度</b><span>明确提交方向、任务、数据子集与输入模态</span></p>
         </div>
         <div class="dialog-step">
           <span class="dialog-step-num">3</span>
@@ -502,6 +418,8 @@
   </dialog>
 
   <script src="subpages.js"></script>
+  <link rel="stylesheet" href="feedback-module/feedback-module.css" />
+  <script src="feedback-module/feedback-module.js"></script>
   <script src="comments.js"></script>
 </body>
 </html>
