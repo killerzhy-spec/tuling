@@ -18,10 +18,17 @@
 
   var SECTION_ORDER = ['摘要', '任务适配理由', '数据规模', '获取方式', '标注信息',
     '内容字段', '数据处理', '使用说明', '评测指标', '榜单信息',
-    '许可证', '验证信息', '维护信息', '版本信息'];
+    '许可证'];
+
+  var VALID_DIMENSIONS = {
+    affective: true,
+    cognitive: true,
+    concern: true,
+    safety: true
+  };
 
   var state = {
-    catId: DATA.categories[0].id,
+    catId: '', // '' = 全部数据集
     subtask: '',   // '' = 全部
     query: ''
   };
@@ -38,7 +45,7 @@
         e._catId = cat.id;
         e._subtask = st.name;
         e._search = [
-          e.name, e.title, e.en, e.year, e.modality, e.language,
+          e.name, e.title, e.en, e.year, e.modality,
           e.access, st.name, cat.name,
           stripHtml(e.sections['摘要']),
           stripHtml(e.sections['任务适配理由'])
@@ -55,6 +62,31 @@
       });
     });
     return out;
+  }
+
+  function isValidDimension(dim) {
+    return !!VALID_DIMENSIONS[dim];
+  }
+
+  function parseDimensionFromUrl() {
+    var params = new URLSearchParams(window.location.search);
+    var dim = params.get('dimension');
+    return isValidDimension(dim) ? dim : '';
+  }
+
+  function syncDimensionToUrl(replace) {
+    var url = new URL(window.location.href);
+    if (isValidDimension(state.catId)) {
+      url.searchParams.set('dimension', state.catId);
+    } else {
+      url.searchParams.delete('dimension');
+    }
+    var nextUrl = url.pathname + (url.searchParams.toString() ? ('?' + url.searchParams.toString()) : '') + url.hash;
+    if (replace) {
+      window.history.replaceState({ dimension: state.catId || '' }, '', nextUrl);
+    } else {
+      window.history.pushState({ dimension: state.catId || '' }, '', nextUrl);
+    }
   }
 
   /* ---------- 访问状态标签样式 ---------- */
@@ -75,7 +107,17 @@
     var wrap = qs('#cat-stats');
     if (!wrap) return;
     var max = Math.max.apply(null, DATA.categories.map(function (c) { return c.count; }));
-    wrap.innerHTML = DATA.categories.map(function (cat) {
+    var total = DATA.totalEntries || allEntries().length;
+    var allPct = Math.round(total / max * 100);
+    var allCard = '<div class="cat-stat' + (state.catId === '' ? ' active' : '') +
+      '" data-cat="" role="button" tabindex="0">' +
+      '<div class="cat-stat-name">全部数据集' +
+      '<span class="cat-stat-count">' + total + '</span></div>' +
+      '<div class="cat-stat-bar"><div class="cat-stat-fill" style="width:' + allPct + '%"></div></div>' +
+      '<div class="cat-stat-sub">4 个能力维度</div>' +
+      '</div>';
+
+    wrap.innerHTML = allCard + DATA.categories.map(function (cat) {
       var tasks = cat.subtasks.length;
       var pct = Math.round(cat.count / max * 100);
       return '<div class="cat-stat' + (cat.id === state.catId ? ' active' : '') +
@@ -94,6 +136,7 @@
         renderCatStats();
         renderChips();
         renderList();
+        syncDimensionToUrl(false);
       }
       el.addEventListener('click', pick);
       el.addEventListener('keydown', function (ev) {
@@ -104,13 +147,18 @@
 
   /* ---------- 渲染：细分任务 chips ---------- */
   function currentCat() {
-    return DATA.categories.filter(function (c) { return c.id === state.catId; })[0];
+    return DATA.categories.filter(function (c) { return c.id === state.catId; })[0] || null;
   }
 
   function renderChips() {
     var wrap = qs('#subtask-chips');
     if (!wrap) return;
     var cat = currentCat();
+    if (!cat) {
+      wrap.innerHTML = '<button class="subtask-chip active" data-sub="">全部 <span class="chip-n">' +
+        (DATA.totalEntries || allEntries().length) + '</span></button>';
+      return;
+    }
     var chips = ['<button class="subtask-chip' + (state.subtask === '' ? ' active' : '') +
       '" data-sub="">全部 <span class="chip-n">' + cat.count + '</span></button>'];
     cat.subtasks.forEach(function (st) {
@@ -140,20 +188,27 @@
     });
   }
 
+  function compactModality(modality) {
+    var text = (modality || '').trim();
+    if (!text || /暂未提供/.test(text)) return '待补充';
+    text = text.replace(/\s*\+\s*/g, '+').replace(/\s*\/\s*/g, '/');
+    return text.length > 20 ? text.slice(0, 20) + '…' : text;
+  }
+
   function entryHeadHtml(e, idx) {
     var yearTag = e.year && !/暂未提供/.test(e.year)
       ? '<span class="entry-year">' + escapeHtml(e.year) + '</span>' : '';
-    var modality = e.modality && !/暂未提供/.test(e.modality) ? e.modality : '模态见详情';
+    var modalityTag = compactModality(e.modality);
     return '<button class="entry-head" aria-expanded="false">' +
       '<span class="entry-idx">' + (idx + 1) + '</span>' +
       '<div class="entry-main">' +
       '<div class="entry-name">' + escapeHtml(e.name) + yearTag + '</div>' +
       '<div class="entry-sub">' +
       '<span><b>' + escapeHtml(e._subtask) + '</b></span>' +
-      '<span>' + escapeHtml(modality.length > 42 ? modality.slice(0, 42) + '…' : modality) + '</span>' +
       '</div></div>' +
       '<div class="entry-tags">' +
       '<span class="ds-tag ds-tag-' + e._catId + '">' + e._cat + '</span>' +
+      '<span class="ds-tag ds-tag-modality">模态: ' + escapeHtml(modalityTag) + '</span>' +
       '<span class="' + accessClass(e.access) + '">' + escapeHtml(e.access) + '</span>' +
       '</div>' +
       '<span class="entry-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
@@ -166,7 +221,7 @@
       ['条目编号', e.entryId ? '<code>' + escapeHtml(e.entryId) + '</code>' : ''],
       ['数据集编号', e.datasetId ? '<code>' + escapeHtml(e.datasetId) + '</code>' : ''],
       ['年份', escapeHtml(e.year)],
-      ['语言', escapeHtml(e.language)],
+      ['模态', escapeHtml(e.modality)],
       ['官方链接', e.link && /^https?:/.test(e.link)
         ? '<a href="' + escapeHtml(e.link) + '" target="_blank" rel="noopener">' + escapeHtml(e.link) + ' ↗</a>'
         : escapeHtml(e.link)]
@@ -196,7 +251,8 @@
 
     if (counter) {
       var cat = currentCat();
-      counter.textContent = '当前筛选：' + cat.name +
+      var catName = cat ? cat.name : '全部数据集';
+      counter.textContent = '当前筛选：' + catName +
         (state.subtask ? ' · ' + state.subtask : '') +
         ' — 共 ' + entries.length + ' 条评测条目';
     }
@@ -242,10 +298,27 @@
 
   /* ---------- Init ---------- */
   function init() {
+    state.catId = parseDimensionFromUrl();
     renderCatStats();
     renderChips();
     renderList();
     initSearch();
+    syncDimensionToUrl(true);
+
+    window.addEventListener('popstate', function () {
+      state.catId = parseDimensionFromUrl();
+      state.subtask = '';
+      renderCatStats();
+      renderChips();
+      renderList();
+    });
+
+    if (state.catId) {
+      var activeCat = qs('.cat-stat.active');
+      var list = qs('#entry-list');
+      if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (activeCat) activeCat.focus();
+    }
   }
 
   if (document.readyState === 'loading') {

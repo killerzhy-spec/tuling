@@ -124,6 +124,14 @@
     var note = qs('#radar-note', wrap);
     if (!tabs.length || !img || !title || !sub || !note) return;
 
+    var fallback = document.createElement('div');
+    fallback.className = 'radar-fallback';
+    fallback.setAttribute('role', 'status');
+    fallback.setAttribute('aria-live', 'polite');
+    fallback.textContent = '雷达图资源加载失败，请检查 assets 目录中的 PNG 文件是否完整。';
+    fallback.hidden = true;
+    img.insertAdjacentElement('afterend', fallback);
+
     var views = {
       overview: {
         title: '共情能力雷达图',
@@ -162,20 +170,34 @@
       }
     };
 
+    function setView(key) {
+      var v = views[key] || views.overview;
+      tabs.forEach(function (t) {
+        var isActive = t.getAttribute('data-view') === key;
+        t.classList.toggle('active', isActive);
+        t.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+      title.textContent = v.title;
+      sub.textContent = v.sub;
+      note.textContent = v.note;
+      fallback.hidden = true;
+      img.hidden = false;
+      img.setAttribute('src', v.src);
+      img.setAttribute('alt', v.alt);
+    }
+
+    img.addEventListener('error', function () {
+      img.hidden = true;
+      fallback.hidden = false;
+    });
+
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function () {
-        tabs.forEach(function (t) { t.classList.remove('active'); });
-        tab.classList.add('active');
-        var key = tab.getAttribute('data-view');
-        var v = views[key];
-        if (!v) return;
-        title.textContent = v.title;
-        sub.textContent = v.sub;
-        note.textContent = v.note;
-        img.setAttribute('src', v.src);
-        img.setAttribute('alt', v.alt);
+        setView(tab.getAttribute('data-view'));
       });
     });
+
+    setView('overview');
   }
 
   /* ---------- Init ---------- */
