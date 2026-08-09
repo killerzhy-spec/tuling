@@ -240,9 +240,15 @@
 }
 
 .hero-metrics .metrics-bar {
-  gap: 64px;
+  gap: clamp(56px, 8vw, 132px);
   justify-content: center;
   width: 100%;
+}
+
+.hero-metrics .metric-item {
+  min-width: 160px;
+  align-items: center;
+  text-align: center;
 }
 
 .hero-metric-num {
@@ -1663,6 +1669,10 @@
 
   .composite-score-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-metrics .metrics-bar {
+    gap: 28px 56px;
   }
 
   .mei-layout {

@@ -843,7 +843,7 @@ code {
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 48px;
-  align-items: center;
+  align-items: stretch;
 }
 
 .mei-cards {
@@ -901,6 +901,12 @@ code {
   border-radius: var(--radius-lg);
   padding: 32px;
   text-align: center;
+}
+
+@media (min-width: 1101px) {
+  .mei-layout .radar-wrap {
+    height: 100%;
+  }
 }
 
 .radar-title {

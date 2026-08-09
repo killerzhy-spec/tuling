@@ -382,6 +382,20 @@
       }
     }
 
+    function getErrorText(error) {
+      var text = String(error && error.message || '');
+      if (!text) return '未知错误';
+      try {
+        var parsed = JSON.parse(text);
+        if (parsed && (parsed.message || parsed.error_description || parsed.hint)) {
+          return String(parsed.message || parsed.error_description || parsed.hint);
+        }
+      } catch (parseError) {
+        // Keep original text when response is not JSON.
+      }
+      return text;
+    }
+
     function setBusy(form, busy) {
       Array.prototype.slice.call(form.querySelectorAll('button, input, textarea')).forEach(function (control) {
         control.disabled = busy;
@@ -709,16 +723,28 @@
               return;
             }
             if (!window.confirm('确认后将从数据库彻底删除这条反馈及其全部回复，是否继续？')) return;
-            apiRequest('?id=eq.' + encodeURIComponent(comment.id), {
+            setBusy(replyForm, true);
+            var removeChildren = apiRequest('?parent_id=eq.' + encodeURIComponent(comment.id), {
               method: 'DELETE',
               headers: { Prefer: 'return=minimal' }
+            });
+            removeChildren.then(function () {
+              return apiRequest('?id=eq.' + encodeURIComponent(comment.id), {
+                method: 'DELETE',
+                headers: { Prefer: 'return=minimal' }
+              });
             }).then(function () {
               clearHiddenComment(comment.id);
               state.comments = state.comments.filter(function (item) { return item.id !== comment.id; });
               closePanel();
               renderPins();
               return loadComments();
-            }).catch(showServiceError);
+            }).catch(function (error) {
+              showServiceError(error);
+              window.alert('删除失败：' + getErrorText(error));
+            }).then(function () {
+              setBusy(replyForm, false);
+            });
           });
         }
       }
