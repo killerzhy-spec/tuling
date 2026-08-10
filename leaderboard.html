@@ -110,29 +110,28 @@
       <div class="lb-version" id="lb-count">综合视图 · 5 个模型</div>
 
       <div class="lb-tabs">
-        <button class="lb-tab active" data-view="overall">综合</button>
+        <button class="lb-tab active" data-view="overall">综合评分</button>
         <button class="lb-tab" data-view="affective">情感共情</button>
         <button class="lb-tab" data-view="cognitive">认知共情</button>
         <button class="lb-tab" data-view="concern">共情关怀</button>
         <button class="lb-tab" data-view="safe">安全交互</button>
       </div>
 
+      <div class="lb-current-intro reveal">
+        <h2 class="lb-current-title" id="lb-current-title">综合评分</h2>
+        <p class="lb-current-note" id="lb-current-note">综合视图展示四个方向的聚合结果；平均评分严格沿用源表计算结果，并按平均评分降序排序。</p>
+      </div>
+
       <div class="lb-table-wrap reveal">
         <table class="lb-table">
-          <thead>
-            <tr>
-              <th>排名</th>
-              <th>模型</th>
-              <th id="lb-current-head">综合评分</th>
-              <th>情感共情</th>
-              <th>认知共情</th>
-              <th>共情关怀</th>
-              <th>安全交互</th>
-            </tr>
-          </thead>
+          <thead id="lb-head"></thead>
           <tbody id="lb-body"></tbody>
         </table>
       </div>
+
+      <p class="lb-demo-note" id="lb-view-note">
+        各方向平均分是该方向可用细分任务分的算术平均；缺失值显示为 —，并按源表规则忽略，不按 0 计入。
+      </p>
 
       <p class="lb-demo-note">
         结果为特定模型版本、输入模态和评测规则下的研究性聚合展示；不构成官方总排名、安全认证、采购建议或高风险部署保证。

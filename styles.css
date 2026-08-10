@@ -858,11 +858,24 @@ code {
   border-radius: var(--radius);
   padding: 26px;
   transition: transform .3s var(--ease), border-color .3s var(--ease);
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
 
-.mei-card:hover {
+.mei-card:hover,
+.mei-card:focus-visible {
   transform: translateY(-4px);
   border-color: var(--blue);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(22, 119, 255, .14);
+}
+
+.mei-card.is-active {
+  border-color: var(--blue);
+  box-shadow: 0 14px 34px rgba(22, 119, 255, .12);
+  background: linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
 }
 
 .mei-card-num {

@@ -33,7 +33,6 @@
     query: ''
   };
 
-  /* ---------- 预处理：搜索串 ---------- */
   function stripHtml(s) {
     return (s || '').replace(/<[^>]+>/g, ' ');
   }

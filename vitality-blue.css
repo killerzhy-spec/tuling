@@ -86,14 +86,6 @@
   flex-wrap: wrap;
 }
 
-.theory-tags {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-top: 8px;
-}
-
 .theory-label {
   font-size: 12px;
   color: var(--muted);
@@ -153,10 +145,10 @@
 }
 
 /* Four-direction layout */
-.cap-affective { top: -1%; left: 50%; transform: translateX(-50%); text-align: center; }
-.cap-cognitive { right: 1%; top: 50%; transform: translateY(-50%); text-align: right; }
-.cap-concern { left: 3%; top: 50%; transform: translateY(-50%); }
-.cap-safety { bottom: -3%; left: 50%; transform: translateX(-50%); text-align: center; }
+.cap-affective { top: 2%; left: 50%; transform: translateX(-50%); text-align: center; }
+.cap-cognitive { right: -3%; top: 50%; transform: translateY(-50%); text-align: right; }
+.cap-concern { left: -1%; top: 50%; transform: translateY(-50%); }
+.cap-safety { bottom: 0; left: 50%; transform: translateX(-50%); text-align: center; }
 
 /* ---------- 3. Live Index Card ---------- */
 .index-card {
@@ -1364,6 +1356,26 @@
   margin-bottom: 32px;
 }
 
+.lb-current-intro {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.lb-current-title {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.lb-current-note {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--muted);
+  max-width: 920px;
+}
+
 .lb-tab {
   font-family: 'Noto Sans SC', sans-serif;
   font-size: 14px;
@@ -1432,6 +1444,36 @@
   background: var(--paper);
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
+}
+
+.lb-table th:first-child,
+.lb-table td:first-child,
+.lb-table th:nth-child(2),
+.lb-table td:nth-child(2) {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: inherit;
+}
+
+.lb-table th:nth-child(2),
+.lb-table td:nth-child(2) {
+  left: 88px;
+}
+
+.lb-table th:first-child,
+.lb-table th:nth-child(2) {
+  z-index: 2;
+}
+
+.lb-table tbody td:first-child,
+.lb-table tbody td:nth-child(2) {
+  background: #ffffff;
+}
+
+.lb-table tbody tr:hover td:first-child,
+.lb-table tbody tr:hover td:nth-child(2) {
+  background: #fafdff;
 }
 
 .lb-table td {
@@ -1743,14 +1785,14 @@
   }
 
   .cap-cognitive {
-    right: 2%;
-    top: 56%;
+    right: -1%;
+    top: 50%;
     max-width: 116px;
   }
 
   .cap-concern {
-    left: 2%;
-    top: 56%;
+    left: 0;
+    top: 50%;
     max-width: 116px;
   }
 

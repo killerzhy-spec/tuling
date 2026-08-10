@@ -222,6 +222,7 @@
     if (!wrap) return;
 
     var tabs = qsa('.radar-tab', wrap);
+    var cards = qsa('[data-radar-view]');
     var img = qs('#radar-image', wrap);
     var title = qs('#radar-title', wrap);
     var sub = qs('#radar-sub', wrap);
@@ -281,6 +282,11 @@
         t.classList.toggle('active', isActive);
         t.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
+      cards.forEach(function (card) {
+        var isActive = card.getAttribute('data-radar-view') === key;
+        card.classList.toggle('is-active', isActive);
+        card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
       title.textContent = v.title;
       sub.textContent = v.sub;
       note.textContent = v.note;
@@ -288,6 +294,15 @@
       img.hidden = false;
       img.setAttribute('src', v.src);
       img.setAttribute('alt', v.alt);
+    }
+
+    function focusView(key) {
+      var targetTab = tabs.filter(function (tab) {
+        return tab.getAttribute('data-view') === key;
+      })[0];
+      setView(key);
+      wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (targetTab) targetTab.focus({ preventScroll: true });
     }
 
     img.addEventListener('error', function () {
@@ -301,7 +316,20 @@
       });
     });
 
+    wrap._setRadarView = focusView;
     setView('overview');
+  }
+
+  function initRadarCards() {
+    var wrap = qs('[data-radar-switcher]');
+    var cards = qsa('[data-radar-view]');
+    if (!wrap || !cards.length || typeof wrap._setRadarView !== 'function') return;
+
+    cards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        wrap._setRadarView(card.getAttribute('data-radar-view'));
+      });
+    });
   }
 
   /* ---------- 5. Waveform (owned preview) ---------- */
@@ -332,6 +360,7 @@
     initDialog();
     initBrainAnimation();
     initRadarSwitcher();
+    initRadarCards();
     initWaveform();
     initYear();
     initLangToggle();

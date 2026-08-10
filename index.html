@@ -100,12 +100,6 @@
             <a href="datasets.html" class="btn btn-primary">浏览公共数据集 →</a>
             <a href="framework.html" class="btn btn-ghost">了解测评框架</a>
           </div>
-          <div class="theory-tags fade-in-up fade-in-up-delay-4">
-            <span class="theory-label">理论基础</span>
-            <span class="chip chip-outline">Affective Empathy</span>
-            <span class="chip chip-outline">Cognitive Empathy</span>
-            <span class="chip chip-outline">Safe Interaction</span>
-          </div>
         </div>
 
         <!-- Right: Brain Animation -->
@@ -129,62 +123,51 @@
             </div>
 
             <svg class="brain-svg" viewBox="0 0 400 400" fill="none" aria-hidden="true">
-              <!-- Outer hexagon (pointy-top, R=140) -->
+              <!-- Outer diamond -->
               <path class="brain-outline"
-                d="M200,60 L321,130 L321,270 L200,340 L79,270 L79,130 Z"
+                d="M200,70 L330,200 L200,330 L70,200 Z"
                 stroke="#1677FF" stroke-width="1.5" />
 
-              <!-- Inner hexagon (R=100) -->
+              <!-- Inner diamond -->
               <path
-                d="M200,100 L287,150 L287,250 L200,300 L113,250 L113,150 Z"
+                d="M200,115 L285,200 L200,285 L115,200 Z"
                 stroke="#64B5FF" stroke-width="1" stroke-opacity="0.3" />
 
               <!-- Dashed axis lines -->
-              <line x1="200" y1="50" x2="200" y2="350" stroke="#1677FF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 4" />
-              <line x1="65" y1="200" x2="335" y2="200" stroke="#1677FF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 4" />
+              <line x1="200" y1="56" x2="200" y2="344" stroke="#1677FF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 4" />
+              <line x1="56" y1="200" x2="344" y2="200" stroke="#1677FF" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="4 4" />
 
-              <!-- Four directions around one shared empathy center -->
-
-              <!-- 3 straight diagonal lines connecting opposite vertices through center -->
-              <line class="brain-line" x1="200" y1="60"  x2="200" y2="340" stroke="#1677FF" stroke-width="1.1" />
-              <line class="brain-line" x1="321" y1="130" x2="79"  y2="270" stroke="#705CFF" stroke-width="1.1" />
-              <line class="brain-line" x1="79"  y1="130" x2="321" y2="270" stroke="#64B5FF" stroke-width="1.1" />
+              <!-- Four spokes from each vertex to center -->
+              <line class="brain-line" x1="200" y1="70" x2="200" y2="200" stroke="#1677FF" stroke-width="1.1" />
+              <line class="brain-line" x1="330" y1="200" x2="200" y2="200" stroke="#705CFF" stroke-width="1.1" />
+              <line class="brain-line" x1="200" y1="330" x2="200" y2="200" stroke="#64B5FF" stroke-width="1.1" />
+              <line class="brain-line" x1="70" y1="200" x2="200" y2="200" stroke="#73C4FF" stroke-width="1.1" />
 
               <!-- Center glow -->
               <circle cx="200" cy="200" r="14" fill="#1677FF" fill-opacity="0.08" />
               <circle cx="200" cy="200" r="7"  fill="#1677FF" fill-opacity="0.2" />
               <circle cx="200" cy="200" r="3"  fill="#1677FF" />
 
-              <!-- Vertex dots: translate to center + shrink from large to small, slow ease-in -->
-              <circle class="brain-dot" cx="200" cy="60" r="7">
-                <animateTransform attributeName="transform" type="translate" values="0,0; 0,140; 0,0" keyTimes="0;0.5;1" dur="8s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1s"/>
-                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="8s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1s"/>
-                <animate attributeName="opacity" values="0.5;1;0.5" keyTimes="0;0.5;1" dur="8s" repeatCount="indefinite" begin="-1s"/>
+              <!-- Vertex dots: move along each diamond spoke toward center -->
+              <circle class="brain-dot" cx="200" cy="70" r="7">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 0,130; 0,0" keyTimes="0;0.5;1" dur="8.4s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.8s"/>
+                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="8.4s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.8s"/>
+                <animate attributeName="opacity" values="0.5;1;0.5" keyTimes="0;0.5;1" dur="8.4s" repeatCount="indefinite" begin="-0.8s"/>
               </circle>
-              <circle class="brain-dot-purple" cx="321" cy="130" r="8">
-                <animateTransform attributeName="transform" type="translate" values="0,0; -121,70; 0,0" keyTimes="0;0.5;1" dur="7.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.2s"/>
-                <animate attributeName="r" values="8;2;8" keyTimes="0;0.5;1" dur="7.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.2s"/>
-                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="7.5s" repeatCount="indefinite" begin="-1.2s"/>
+              <circle class="brain-dot-purple" cx="330" cy="200" r="8">
+                <animateTransform attributeName="transform" type="translate" values="0,0; -130,0; 0,0" keyTimes="0;0.5;1" dur="7.6s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.1s"/>
+                <animate attributeName="r" values="8;2;8" keyTimes="0;0.5;1" dur="7.6s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.1s"/>
+                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="7.6s" repeatCount="indefinite" begin="-1.1s"/>
               </circle>
-              <circle class="brain-dot" cx="321" cy="270" r="7">
-                <animateTransform attributeName="transform" type="translate" values="0,0; -121,-70; 0,0" keyTimes="0;0.5;1" dur="9s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.8s"/>
-                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="9s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.8s"/>
-                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="9s" repeatCount="indefinite" begin="-0.8s"/>
+              <circle class="brain-dot" cx="200" cy="330" r="7">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 0,-130; 0,0" keyTimes="0;0.5;1" dur="9.2s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.9s"/>
+                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="9.2s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.9s"/>
+                <animate attributeName="opacity" values="0.5;1;0.5" keyTimes="0;0.5;1" dur="9.2s" repeatCount="indefinite" begin="-1.9s"/>
               </circle>
-              <circle class="brain-dot" cx="200" cy="340" r="7">
-                <animateTransform attributeName="transform" type="translate" values="0,0; 0,-140; 0,0" keyTimes="0;0.5;1" dur="10s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-2s"/>
-                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="10s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-2s"/>
-                <animate attributeName="opacity" values="0.5;1;0.5" keyTimes="0;0.5;1" dur="10s" repeatCount="indefinite" begin="-2s"/>
-              </circle>
-              <circle class="brain-dot" cx="79" cy="270" r="8">
-                <animateTransform attributeName="transform" type="translate" values="0,0; 121,-70; 0,0" keyTimes="0;0.5;1" dur="7s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.6s"/>
-                <animate attributeName="r" values="8;2;8" keyTimes="0;0.5;1" dur="7s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.6s"/>
-                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="7s" repeatCount="indefinite" begin="-1.6s"/>
-              </circle>
-              <circle class="brain-dot" cx="79" cy="130" r="7">
-                <animateTransform attributeName="transform" type="translate" values="0,0; 121,70; 0,0" keyTimes="0;0.5;1" dur="8.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.5s"/>
-                <animate attributeName="r" values="7;2;7" keyTimes="0;0.5;1" dur="8.5s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-0.5s"/>
-                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="8.5s" repeatCount="indefinite" begin="-0.5s"/>
+              <circle class="brain-dot" cx="70" cy="200" r="8">
+                <animateTransform attributeName="transform" type="translate" values="0,0; 130,0; 0,0" keyTimes="0;0.5;1" dur="7.2s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.5s"/>
+                <animate attributeName="r" values="8;2;8" keyTimes="0;0.5;1" dur="7.2s" calcMode="spline" keySplines="0.6 0 0.8 1;0.2 0 0.4 1" repeatCount="indefinite" begin="-1.5s"/>
+                <animate attributeName="opacity" values="0.4;1;0.4" keyTimes="0;0.5;1" dur="7.2s" repeatCount="indefinite" begin="-1.5s"/>
               </circle>
             </svg>
 
@@ -334,38 +317,38 @@
 
       <div class="mei-layout">
         <div class="mei-cards">
-          <div class="mei-card reveal">
+          <button class="mei-card reveal" type="button" data-radar-view="affective" aria-label="查看情感共情雷达图">
             <span class="mei-card-num">01</span>
             <div class="mei-card-title">情感共情</div>
             <div class="mei-card-en">Affective Empathy</div>
             <ul class="mei-task-list">
               <li>情绪类别识别</li><li>情绪强度判断</li><li>情感极性判断</li><li>微表情与细微信号识别</li><li>伪装情绪识别</li><li>跨模态冲突识别</li><li>情绪变化追踪</li><li>群体情绪识别</li><li>情感敏感性解释</li>
             </ul>
-          </div>
-          <div class="mei-card reveal">
+          </button>
+          <button class="mei-card reveal" type="button" data-radar-view="cognitive" aria-label="查看认知共情雷达图">
             <span class="mei-card-num">02</span>
             <div class="mei-card-title">认知共情</div>
             <div class="mei-card-en">Cognitive Empathy</div>
             <ul class="mei-task-list">
               <li>情绪原因与对象推理</li><li>隐含需求识别</li><li>观点采择与心理状态推断</li><li>复杂/混合/转化情绪理解</li><li>情绪词汇与细粒度情绪识别</li><li>情绪对注意/记忆/风险和社会判断的影响理解</li><li>社会角色识别与关系情绪理解</li>
             </ul>
-          </div>
-          <div class="mei-card reveal">
+          </button>
+          <button class="mei-card reveal" type="button" data-radar-view="concern" aria-label="查看共情关怀雷达图">
             <span class="mei-card-num">03</span>
             <div class="mei-card-title">共情关怀</div>
             <div class="mei-card-en">Empathic Concern</div>
             <ul class="mei-task-list">
               <li>共情回应生成</li><li>语气/强度和角色适配</li><li>多模态回应一致性</li><li>支持策略选择</li><li>情绪安抚与认知重评</li><li>个性化调节与效果评估</li><li>关系修复与社会礼貌回应</li>
             </ul>
-          </div>
-          <div class="mei-card reveal">
+          </button>
+          <button class="mei-card reveal" type="button" data-radar-view="safe" aria-label="查看安全交互雷达图">
             <span class="mei-card-num">04</span>
             <div class="mei-card-title">安全交互</div>
             <div class="mei-card-en">Safe &amp; Accountable Interaction</div>
             <ul class="mei-task-list">
               <li>高风险情绪与危机识别</li><li>危机安全回应与现实求助引导</li><li>非评判倾听与去污名化回应</li><li>情绪操控/PUA 与威胁识别</li><li>拟人化与依赖风险控制</li><li>医疗/心理/法律等专业边界维护</li><li>隐私保护与敏感信息边界</li><li>幻觉风险与不确定性控制</li><li>偏见/公平性与社会伤害风险识别</li><li>冲突/暴力和冲动行为降级</li>
             </ul>
-          </div>
+          </button>
         </div>
 
         <div class="radar-wrap reveal" data-radar-switcher>
