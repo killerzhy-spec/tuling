@@ -194,15 +194,11 @@
   function render(viewKey) {
     var view = VIEWS[viewKey] || VIEWS.overall;
     var rows = sortRows(view);
-    var tableWrap = qs('.lb-table-wrap');
     var countEl = qs('#lb-count');
     var titleEl = qs('#lb-current-title');
     var noteEl = qs('#lb-current-note');
     var viewNoteEl = qs('#lb-view-note');
 
-    if (tableWrap) tableWrap.classList.add('is-loading');
-
-    // 每次切换都完整重建当前视图的表头和表体，避免复用旧列结构导致穿模。
     renderHeader(view.columns);
     renderRows(view.columns, rows);
 
@@ -210,12 +206,6 @@
     if (titleEl) titleEl.textContent = view.title;
     if (noteEl) noteEl.textContent = view.note;
     if (viewNoteEl) viewNoteEl.textContent = view.viewNote;
-
-    if (tableWrap) {
-      requestAnimationFrame(function () {
-        tableWrap.classList.remove('is-loading');
-      });
-    }
   }
 
   function initViewTabs() {
