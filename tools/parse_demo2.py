@@ -14,10 +14,10 @@ import html as html_mod
 
 # 字段规范顺序（页面渲染按此顺序）
 META_FIELDS = ['英文名称', '条目编号', '数据集编号', '能力大类', '细分任务',
-               '年份', '模态', '语言', '访问状态', '官方链接']
+                    '年份', '模态', '访问状态', '官方链接']
 SECTION_FIELDS = ['摘要', '任务适配理由', '数据规模', '获取方式', '标注信息',
                   '内容字段', '数据处理', '使用说明', '评测指标', '榜单信息',
-                  '许可证', '验证信息', '维护信息', '版本信息']
+                        '许可证']
 ALL_FIELDS = META_FIELDS + SECTION_FIELDS
 
 CATEGORIES = ['情感共情', '认知共情', '共情关怀', '安全交互']
@@ -170,7 +170,6 @@ def main(md_path, out_path):
                 'en': meta.get('英文名称', ''),
                 'year': meta.get('年份', ''),
                 'modality': meta.get('模态', ''),
-                'language': meta.get('语言', ''),
                 'access': meta.get('访问状态', ''),
                 'link': meta.get('官方链接', ''),
                 'sections': sections,
