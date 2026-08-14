@@ -16,6 +16,13 @@
   var DATA = window.TURING_DATA;
   if (!DATA) return;
 
+  var DOC_IMAGE_MAP = window.TURING_DOC_IMAGE_MAP || {};
+  var FORBIDDEN_SECTION_KEYS = {
+    '验证信息': true,
+    '维护信息': true,
+    '版本信息': true
+  };
+
   var SECTION_ORDER = ['摘要', '任务适配理由', '数据规模', '获取方式', '标注信息',
     '内容字段', '数据处理', '使用说明', '评测指标', '榜单信息',
     '许可证'];
@@ -40,9 +47,20 @@
   DATA.categories.forEach(function (cat) {
     cat.subtasks.forEach(function (st) {
       st.entries.forEach(function (e) {
+        if (e.language != null) {
+          delete e.language;
+        }
+        if (e.sections) {
+          Object.keys(e.sections).forEach(function (key) {
+            if (FORBIDDEN_SECTION_KEYS[key]) {
+              delete e.sections[key];
+            }
+          });
+        }
         e._cat = cat.name;
         e._catId = cat.id;
         e._subtask = st.name;
+        e._images = DOC_IMAGE_MAP[e.entryId] || DOC_IMAGE_MAP[e.datasetId] || DOC_IMAGE_MAP[e.name] || [];
         e._search = [
           e.name, e.title, e.en, e.year, e.modality,
           e.access, st.name, cat.name,
@@ -204,14 +222,33 @@
       '<div class="entry-name">' + escapeHtml(e.name) + yearTag + '</div>' +
       '<div class="entry-sub">' +
       '<span><b>' + escapeHtml(e._subtask) + '</b></span>' +
-      '</div></div>' +
+      '</div>' +
       '<div class="entry-tags">' +
       '<span class="ds-tag ds-tag-' + e._catId + '">' + e._cat + '</span>' +
-      '<span class="ds-tag ds-tag-modality">模态: ' + escapeHtml(modalityTag) + '</span>' +
+      '<span class="ds-tag ds-tag-modality" title="' + escapeHtml(e.modality || '资料暂未提供') + '">模态: ' + escapeHtml(modalityTag) + '</span>' +
       '<span class="' + accessClass(e.access) + '">' + escapeHtml(e.access) + '</span>' +
-      '</div>' +
+      '</div></div>' +
       '<span class="entry-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
       '</button>';
+  }
+
+  function renderEntryImages(e) {
+    if (!e._images || !e._images.length) return '';
+    var items = e._images.filter(function (img) {
+      return img && img.src;
+    });
+    if (!items.length) return '';
+
+    var html = '<div class="entry-section"><div class="entry-section-label">图示</div><div class="entry-image-grid">';
+    items.forEach(function (img, idx) {
+      var alt = img.alt || (e.name + ' 图片 ' + (idx + 1));
+      html += '<button class="entry-image-btn" type="button" data-image-src="' + escapeHtml(img.src) + '" data-image-alt="' + escapeHtml(alt) + '">' +
+        '<img src="' + escapeHtml(img.src) + '" alt="' + escapeHtml(alt) + '" loading="lazy" class="entry-image" />' +
+        '<span class="entry-image-caption">' + escapeHtml(img.caption || alt) + '</span>' +
+        '</button>';
+    });
+    html += '</div></div>';
+    return html;
   }
 
   function entryBodyHtml(e) {
@@ -238,7 +275,65 @@
           '<div class="entry-section-content">' + content + '</div></div>';
       }
     });
+    html += renderEntryImages(e);
     return html;
+  }
+
+  function ensureImagePreviewDialog() {
+    var dlg = qs('#entry-image-preview');
+    if (dlg) return dlg;
+    dlg = document.createElement('dialog');
+    dlg.id = 'entry-image-preview';
+    dlg.className = 'entry-image-preview';
+    dlg.innerHTML =
+      '<div class="entry-image-preview-inner">' +
+      '<button class="entry-image-preview-close" type="button" aria-label="关闭图片预览">×</button>' +
+      '<img class="entry-image-preview-img" alt="" />' +
+      '<p class="entry-image-preview-alt"></p>' +
+      '</div>';
+    document.body.appendChild(dlg);
+
+    dlg.addEventListener('click', function (ev) {
+      var rect = dlg.getBoundingClientRect();
+      var inside = ev.clientX >= rect.left && ev.clientX <= rect.right && ev.clientY >= rect.top && ev.clientY <= rect.bottom;
+      if (!inside && typeof dlg.close === 'function') dlg.close();
+    });
+
+    var closeBtn = qs('.entry-image-preview-close', dlg);
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        if (typeof dlg.close === 'function') dlg.close();
+      });
+    }
+    return dlg;
+  }
+
+  function bindImagePreview(container) {
+    var dlg = ensureImagePreviewDialog();
+    var previewImg = qs('.entry-image-preview-img', dlg);
+    var previewAlt = qs('.entry-image-preview-alt', dlg);
+
+    qsa('.entry-image-btn', container).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var src = btn.getAttribute('data-image-src');
+        var alt = btn.getAttribute('data-image-alt') || '';
+        if (!src) return;
+        previewImg.setAttribute('src', src);
+        previewImg.setAttribute('alt', alt);
+        previewAlt.textContent = alt;
+        if (typeof dlg.showModal === 'function') {
+          dlg.showModal();
+        } else {
+          dlg.setAttribute('open', '');
+        }
+      });
+    });
+
+    qsa('.entry-image', container).forEach(function (img) {
+      img.addEventListener('error', function () {
+        img.classList.add('is-image-error');
+      });
+    });
   }
 
   function renderList() {
@@ -276,6 +371,7 @@
         if (open && !body.getAttribute('data-rendered')) {
           body.innerHTML = entryBodyHtml(entries[i]);
           body.setAttribute('data-rendered', '1');
+          bindImagePreview(body);
         }
       });
     });
