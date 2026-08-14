@@ -276,6 +276,58 @@
     };
 
     function setView(key) {
+      var activeKey = views[key] ? key : 'overview';
+      var view = views[activeKey];
+
+      tabs.forEach(function (tab) {
+        var isActive = tab.getAttribute('data-view') === activeKey;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+
+      cards.forEach(function (card) {
+        var isActive = card.getAttribute('data-radar-view') === activeKey;
+        card.classList.toggle('is-active', isActive);
+        card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+
+      title.textContent = view.title;
+      sub.textContent = view.sub;
+      note.textContent = view.note;
+      img.setAttribute('alt', view.alt);
+
+      fallback.hidden = true;
+      img.hidden = false;
+
+      if (img.getAttribute('src') !== view.src) {
+        img.setAttribute('src', view.src);
+      }
+    }
+
+    img.addEventListener('error', function () {
+      img.hidden = true;
+      fallback.hidden = false;
+    });
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        setView(tab.getAttribute('data-view'));
+      });
+    });
+
+    /*
+     * 保持与原项目 initRadarCards() 的衔接：
+     * 左侧卡片点击时调用 wrap._setRadarView(...)，
+     * 因而会复用同一套更新逻辑。
+     */
+    wrap._setRadarView = setView;
+
+    setView('overview');
+}
+
+  
+
+    function setView(key) {
       var v = views[key] || views.overview;
       tabs.forEach(function (t) {
         var isActive = t.getAttribute('data-view') === key;
