@@ -485,6 +485,12 @@
   background: #f8fbff;
   object-fit: contain;
   aspect-ratio: 4 / 3;
+  opacity: 1;
+  transition: opacity .18s ease;
+}
+
+.radar-wrap.is-switching .radar-image {
+  opacity: .28;
 }
 
 .radar-fallback {
@@ -852,11 +858,25 @@
   color: rgba(255, 255, 255, .72);
 }
 
+.entry-summary {
+  display: -webkit-box;
+  margin-top: 5px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, .58);
+  font-size: 12.5px;
+  line-height: 1.55;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .entry-tags {
   display: flex;
   gap: 8px;
-  flex-shrink: 0;
+  flex: 0 0 280px;
   align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  max-width: 280px;
 }
 
 .ds-tag {
@@ -876,6 +896,11 @@
 .ds-tag-modality {
   background: rgba(22, 119, 255, .1);
   color: var(--blue);
+}
+
+.ds-tag-task {
+  background: rgba(255, 255, 255, .08);
+  color: rgba(255, 255, 255, .72);
 }
 
 .ds-tag-access {

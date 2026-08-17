@@ -168,6 +168,7 @@
   function renderHeader(columns) {
     var head = qs('#lb-head');
     if (!head) return;
+    head.innerHTML = '';
     head.innerHTML = '<tr>' + columns.map(function (column) {
       return '<th>' + column.label + '</th>';
     }).join('') + '</tr>';
@@ -177,6 +178,7 @@
     var body = qs('#lb-body');
     if (!body) return;
 
+    body.innerHTML = '';
     body.innerHTML = rows.map(function (row, idx) {
       return '<tr>' + columns.map(function (column) {
         if (column.key === 'rank') {
