@@ -30,7 +30,8 @@
   var state = {
     catId: '', // '' = 全部数据集
     subtask: '',   // '' = 全部
-    query: ''
+    query: '',
+    sort: 'document'
   };
 
   function stripHtml(s) {
@@ -149,6 +150,40 @@
     return DATA.categories.filter(function (c) { return c.id === state.catId; })[0] || null;
   }
 
+  function currentSubtasks() {
+    var cat = currentCat();
+    if (cat) return cat.subtasks;
+    var seen = {};
+    var out = [];
+    DATA.categories.forEach(function (category) {
+      category.subtasks.forEach(function (subtask) {
+        if (!seen[subtask.name]) {
+          seen[subtask.name] = true;
+          out.push(subtask);
+        }
+      });
+    });
+    return out;
+  }
+
+  function renderToolbar() {
+    var direction = qs('#dataset-direction');
+    var subtask = qs('#dataset-subtask');
+    var sort = qs('#dataset-sort');
+    if (!direction || !subtask || !sort) return;
+
+    direction.innerHTML = '<option value="">全部方向</option>' + DATA.categories.map(function (cat) {
+      return '<option value="' + escapeHtml(cat.id) + '">' + escapeHtml(cat.name) + '</option>';
+    }).join('');
+    direction.value = state.catId;
+
+    subtask.innerHTML = '<option value="">全部细分任务</option>' + currentSubtasks().map(function (task) {
+      return '<option value="' + escapeHtml(task.name) + '">' + escapeHtml(task.name) + '</option>';
+    }).join('');
+    subtask.value = state.subtask;
+    sort.value = state.sort;
+  }
+
   function renderChips() {
     var wrap = qs('#subtask-chips');
     if (!wrap) return;
@@ -187,6 +222,21 @@
     });
   }
 
+  function sortEntries(entries) {
+    var out = entries.slice();
+    if (state.sort === 'name') {
+      return out.sort(function (a, b) { return a.name.localeCompare(b.name, 'zh-CN'); });
+    }
+    if (state.sort === 'year-desc') {
+      return out.sort(function (a, b) {
+        var ay = Number.parseInt(a.year, 10) || 0;
+        var by = Number.parseInt(b.year, 10) || 0;
+        return by - ay;
+      });
+    }
+    return out;
+  }
+
   function compactModality(modality) {
     var text = (modality || '').trim();
     if (!text || /暂未提供/.test(text)) return '待补充';
@@ -202,13 +252,14 @@
     var summaryHtml = summary
       ? '<div class="entry-summary">' + escapeHtml(summary) + '</div>' : '';
     return '<button class="entry-head" aria-expanded="false">' +
-      '<span class="entry-idx">' + (idx + 1) + '</span>' +
+      '<span class="entry-idx">' + String(idx + 1).padStart(3, '0') + '</span>' +
       '<div class="entry-main">' +
-      '<div class="entry-name">' + escapeHtml(e.name) + yearTag + '</div>' +
+      '<div class="entry-name">' + escapeHtml(e.name) + '</div>' +
       summaryHtml + '</div>' +
         '<div class="entry-tags">' +
-        '<span class="ds-tag ds-tag-' + e._catId + '">所属方向：' + escapeHtml(e._cat) + '</span>' +
-        '<span class="ds-tag ds-tag-task">细分任务：' + escapeHtml(e._subtask) + '</span>' +
+        '<span class="ds-tag ds-tag-' + e._catId + '">' + escapeHtml(e._cat) + '</span>' +
+        '<span class="ds-tag ds-tag-task">' + escapeHtml(e._subtask) + '</span>' +
+        yearTag +
         '</div>' +
       '<span class="entry-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
       '</button>';
@@ -246,14 +297,10 @@
     var counter = qs('#result-count');
     if (!list) return;
 
-    var entries = filterEntries();
+    var entries = sortEntries(filterEntries());
 
     if (counter) {
-      var cat = currentCat();
-      var catName = cat ? cat.name : '全部数据集';
-      counter.textContent = '当前筛选：' + catName +
-        (state.subtask ? ' · ' + state.subtask : '') +
-        ' — 共 ' + entries.length + ' 条评测条目';
+      counter.textContent = '显示 ' + entries.length + ' / ' + (DATA.totalEntries || allEntries().length) + ' 条评测条目';
     }
 
     if (!entries.length) {
@@ -295,28 +342,60 @@
     });
   }
 
+  function initToolbar() {
+    var direction = qs('#dataset-direction');
+    var subtask = qs('#dataset-subtask');
+    var sort = qs('#dataset-sort');
+    var clear = qs('#dataset-clear');
+    if (!direction || !subtask || !sort || !clear) return;
+
+    direction.addEventListener('change', function () {
+      state.catId = direction.value;
+      state.subtask = '';
+      renderToolbar();
+      renderList();
+      syncDimensionToUrl(false);
+    });
+    subtask.addEventListener('change', function () {
+      state.subtask = subtask.value;
+      renderList();
+    });
+    sort.addEventListener('change', function () {
+      state.sort = sort.value;
+      renderList();
+    });
+    clear.addEventListener('click', function () {
+      state.catId = '';
+      state.subtask = '';
+      state.query = '';
+      state.sort = 'document';
+      var input = qs('#dataset-search');
+      if (input) input.value = '';
+      renderToolbar();
+      renderList();
+      syncDimensionToUrl(false);
+    });
+  }
+
   /* ---------- Init ---------- */
   function init() {
     state.catId = parseDimensionFromUrl();
-    renderCatStats();
-    renderChips();
+    renderToolbar();
     renderList();
     initSearch();
+    initToolbar();
     syncDimensionToUrl(true);
 
     window.addEventListener('popstate', function () {
       state.catId = parseDimensionFromUrl();
       state.subtask = '';
-      renderCatStats();
-      renderChips();
+      renderToolbar();
       renderList();
     });
 
     if (state.catId) {
-      var activeCat = qs('.cat-stat.active');
       var list = qs('#entry-list');
       if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (activeCat) activeCat.focus();
     }
   }
 

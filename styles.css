@@ -501,6 +501,17 @@ code {
   gap: 24px;
 }
 
+.framework-card-link {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.framework-card-link:focus-visible {
+  outline: 3px solid rgba(22, 119, 255, .35);
+  outline-offset: 3px;
+}
+
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
