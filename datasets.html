@@ -112,22 +112,39 @@
         图片状态：待补充飞书原图（按文档导航详情页逐项替换并记录来源链接）。
       </p>
 
-      <!-- 大类统计卡（JS 渲染） -->
-      <div class="cat-stats" id="cat-stats"></div>
-
       <!-- 浏览器面板 -->
       <div class="browser-panel">
-        <div class="browser-toolbar">
+        <div class="browser-toolbar dataset-toolbar">
           <div class="search-box">
             <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#fff" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
             <input type="search" id="dataset-search" class="search-input"
-              placeholder="搜索数据集名称、英文名、摘要、模态、任务…" aria-label="搜索数据集" />
+              placeholder="搜索数据集、任务、模态、机构、指标或关键词…" aria-label="搜索数据集" />
           </div>
+          <label class="dataset-filter">
+            <span>所属方向</span>
+            <select id="dataset-direction" aria-label="所属方向"></select>
+          </label>
+          <label class="dataset-filter">
+            <span>细分任务</span>
+            <select id="dataset-subtask" aria-label="细分任务"></select>
+          </label>
+          <label class="dataset-filter">
+            <span>排序</span>
+            <select id="dataset-sort" aria-label="排序">
+              <option value="document">文档顺序</option>
+              <option value="year-desc">年份由新到旧</option>
+              <option value="name">名称 A–Z</option>
+            </select>
+          </label>
+          <button class="dataset-clear" id="dataset-clear" type="button" aria-label="清空筛选" title="清空筛选">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
         </div>
 
-        <div class="subtask-chips" id="subtask-chips"></div>
-
-        <div class="result-count" id="result-count"></div>
+        <div class="result-row">
+          <div class="result-count" id="result-count"></div>
+          <span class="result-hint">点击条目查看完整资料</span>
+        </div>
 
         <div class="entry-list" id="entry-list"></div>
       </div>

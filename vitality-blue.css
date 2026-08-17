@@ -690,6 +690,56 @@
   flex-wrap: wrap;
 }
 
+.dataset-toolbar {
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.dataset-filter {
+  display: grid;
+  gap: 6px;
+  flex: 0 0 176px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dataset-filter select {
+  width: 100%;
+  min-height: 42px;
+  appearance: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  background: #f8fbff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.dataset-clear {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  background: #f8fbff;
+  transition: border-color .2s var(--ease), color .2s var(--ease), background .2s var(--ease);
+}
+
+.dataset-clear:hover {
+  color: var(--blue);
+  border-color: var(--blue);
+  background: #fff;
+}
+
+.dataset-clear svg {
+  width: 18px;
+  height: 18px;
+}
+
 .search-box {
   flex: 1;
   min-width: 220px;
@@ -768,6 +818,23 @@
   padding: 14px 22px 4px;
 }
 
+.result-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 4px 22px 0;
+}
+
+.result-row .result-count {
+  padding: 10px 0;
+}
+
+.result-hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 /* ---------- 9. 条目手风琴 ---------- */
 .entry-list {
   padding: 10px 22px 22px;
@@ -809,7 +876,7 @@
   color: var(--cyan);
   background: rgba(115, 196, 255, .12);
   border-radius: 8px;
-  min-width: 34px;
+  min-width: 50px;
   height: 34px;
   display: flex;
   align-items: center;
@@ -866,17 +933,17 @@
   font-size: 12.5px;
   line-height: 1.55;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
 }
 
 .entry-tags {
   display: flex;
   gap: 8px;
-  flex: 0 0 280px;
+  flex: 0 0 420px;
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
-  max-width: 280px;
+  max-width: 420px;
 }
 
 .ds-tag {
@@ -1171,6 +1238,15 @@
   color: var(--ink);
 }
 
+.dataset-page-light .entry-summary {
+  color: #54708e;
+}
+
+.dataset-page-light .ds-tag-task {
+  background: #eef4ff;
+  color: #3769ac;
+}
+
 .dataset-page-light .entry-sub {
   color: var(--muted);
 }
@@ -1452,6 +1528,7 @@
 }
 
 .lb-table {
+  --lb-sticky-rank-width: 66px;
   width: 100%;
   border-collapse: collapse;
   min-width: 860px;
@@ -1472,18 +1549,23 @@
 }
 
 .lb-table th:first-child,
-.lb-table td:first-child,
-.lb-table th:nth-child(2),
-.lb-table td:nth-child(2) {
+.lb-table td:first-child {
   position: sticky;
   left: 0;
   z-index: 1;
+  width: var(--lb-sticky-rank-width);
+  min-width: var(--lb-sticky-rank-width);
+  max-width: var(--lb-sticky-rank-width);
+  box-sizing: border-box;
   background: inherit;
 }
 
 .lb-table th:nth-child(2),
 .lb-table td:nth-child(2) {
-  left: 88px;
+  position: sticky;
+  left: var(--lb-sticky-rank-width);
+  z-index: 1;
+  background: inherit;
 }
 
 .lb-table th:first-child,
@@ -1858,5 +1940,30 @@
 
   .entry-tags {
     padding-left: 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .dataset-toolbar {
+    align-items: stretch;
+  }
+
+  .dataset-toolbar .search-box {
+    flex-basis: 100%;
+  }
+
+  .dataset-filter {
+    flex: 1 1 150px;
+  }
+
+  .entry-tags {
+    flex: 1 1 100%;
+    max-width: none;
+    padding-left: 66px;
+    justify-content: flex-start;
+  }
+
+  .entry-summary {
+    -webkit-line-clamp: 2;
   }
 }
