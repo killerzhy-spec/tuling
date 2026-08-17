@@ -197,19 +197,19 @@
   function entryHeadHtml(e, idx) {
     var yearTag = e.year && !/暂未提供/.test(e.year)
       ? '<span class="entry-year">' + escapeHtml(e.year) + '</span>' : '';
-    var modalityTag = compactModality(e.modality);
+    var summary = stripHtml((e.sections && e.sections['摘要']) || '')
+      .replace(/\s+/g, ' ').trim();
+    var summaryHtml = summary
+      ? '<div class="entry-summary">' + escapeHtml(summary) + '</div>' : '';
     return '<button class="entry-head" aria-expanded="false">' +
       '<span class="entry-idx">' + (idx + 1) + '</span>' +
       '<div class="entry-main">' +
       '<div class="entry-name">' + escapeHtml(e.name) + yearTag + '</div>' +
-      '<div class="entry-sub">' +
-      '<span><b>' + escapeHtml(e._subtask) + '</b></span>' +
-      '</div></div>' +
-      '<div class="entry-tags">' +
-      '<span class="ds-tag ds-tag-' + e._catId + '">' + e._cat + '</span>' +
-      '<span class="ds-tag ds-tag-modality">模态: ' + escapeHtml(modalityTag) + '</span>' +
-      '<span class="' + accessClass(e.access) + '">' + escapeHtml(e.access) + '</span>' +
-      '</div>' +
+      summaryHtml + '</div>' +
+        '<div class="entry-tags">' +
+        '<span class="ds-tag ds-tag-' + e._catId + '">所属方向：' + escapeHtml(e._cat) + '</span>' +
+        '<span class="ds-tag ds-tag-task">细分任务：' + escapeHtml(e._subtask) + '</span>' +
+        '</div>' +
       '<span class="entry-chevron"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 5l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
       '</button>';
   }

@@ -275,25 +275,54 @@
       }
     };
 
+    var switchingId = 0;
+
     function setView(key) {
-      var v = views[key] || views.overview;
+      var activeKey = views[key] ? key : 'overview';
+      var v = views[activeKey];
+      var requestId = ++switchingId;
       tabs.forEach(function (t) {
-        var isActive = t.getAttribute('data-view') === key;
+        var isActive = t.getAttribute('data-view') === activeKey;
         t.classList.toggle('active', isActive);
         t.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
       cards.forEach(function (card) {
-        var isActive = card.getAttribute('data-radar-view') === key;
+        var isActive = card.getAttribute('data-radar-view') === activeKey;
         card.classList.toggle('is-active', isActive);
         card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
       });
-      title.textContent = v.title;
-      sub.textContent = v.sub;
-      note.textContent = v.note;
+
+      wrap.classList.add('is-switching');
       fallback.hidden = true;
       img.hidden = false;
-      img.setAttribute('src', v.src);
-      img.setAttribute('alt', v.alt);
+
+      var nextImage = new Image();
+      nextImage.onload = function () {
+        if (requestId !== switchingId) return;
+
+        img.src = v.src;
+        img.alt = v.alt;
+        title.textContent = v.title;
+        sub.textContent = v.sub;
+        note.textContent = v.note;
+
+        requestAnimationFrame(function () {
+          if (requestId === switchingId) wrap.classList.remove('is-switching');
+        });
+      };
+
+      nextImage.onerror = function () {
+        if (requestId !== switchingId) return;
+
+        title.textContent = v.title;
+        sub.textContent = v.sub;
+        note.textContent = v.note;
+        img.hidden = true;
+        fallback.hidden = false;
+        wrap.classList.remove('is-switching');
+      };
+
+      nextImage.src = v.src;
     }
 
     function focusView(key) {
@@ -304,11 +333,6 @@
       wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
       if (targetTab) targetTab.focus({ preventScroll: true });
     }
-
-    img.addEventListener('error', function () {
-      img.hidden = true;
-      fallback.hidden = false;
-    });
 
     tabs.forEach(function (tab) {
       tab.addEventListener('click', function () {
